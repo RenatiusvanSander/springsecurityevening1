@@ -4,12 +4,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan("edu")
-public class MyAppConfig {
+@ComponentScan("edu.remad.springconfig")
+public class MyAppConfig implements WebMvcConfigurer {
 	
 	@Bean
 	InternalResourceViewResolver viewResolver() {
@@ -18,5 +20,9 @@ public class MyAppConfig {
 		viewResolver.setSuffix(".jsp");
 		
 		return viewResolver;
+	}
+	
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 	}
 }
