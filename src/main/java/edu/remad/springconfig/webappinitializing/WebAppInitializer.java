@@ -1,17 +1,19 @@
-package edu.remad.springconfig.config;
+package edu.remad.springconfig.webappinitializing;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
+import edu.remad.springconfig.security.config.SpringSecurityConfig;
+import edu.remad.springconfig.mvcconfig.WebMvcConfig;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return null;
+		return new Class[] {SpringSecurityConfig.class, WebMvcConfig.class};
 	}
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class<?>[] { MyAppConfig.class, SpringSecurityConfig.class };
+		return null;
 	}
 
 	@Override
