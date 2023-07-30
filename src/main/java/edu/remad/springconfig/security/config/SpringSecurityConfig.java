@@ -7,8 +7,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
 
 @Configuration
 @EnableWebSecurity(debug = true)
@@ -29,18 +31,20 @@ public class SpringSecurityConfig {
      * @return service tells user details
      */
     @Bean
-    public UserDetailsService users() {
-    	UserDetails user = User.builder()
-    		.username("user")
-    		.password("dummy")
-    		.roles("USER")
-    		.build();
-    	UserDetails admin = User.builder()
-    		.username("admin")
-    		.password("dummyAdmin")
-    		.roles("USER", "ADMIN")
-    		.build();
-    	
-    	return new InMemoryUserDetailsManager(user, admin);
+    public InMemoryUserDetailsManager users() {
+			PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+			
+			UserDetails user = User.builder()
+				.username("user")
+				.password(encoder.encode("dummy"))
+				.roles("USER")
+				.build();
+			UserDetails admin = User.builder()
+				.username("admin")
+				.password(encoder.encode("adminDummy"))
+				.roles("USER", "ADMIN")
+				.build();
+			
+			return new InMemoryUserDetailsManager(user, admin);
     }
 }
