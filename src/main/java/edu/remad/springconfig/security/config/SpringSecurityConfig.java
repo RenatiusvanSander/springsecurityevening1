@@ -38,9 +38,9 @@ public class SpringSecurityConfig {
 	@Bean
 	public InMemoryUserDetailsManager users() {
 		UserDetails user = User.builder().username("user")
-				.password("{bcrypt}$2a$10$kLtNvCSnOilfMnmIt8mtI.D0dp231FuXA1VpNvjqxGiU1NVZ.oh1C").roles("USER").build();
+				.password("{bcrypt}$2a$10$HN9/XiCv48GxNh4clkzJ4.iwR59k89S8y7M4kkNBs6Q6MhTCEUb.2").roles("USER").build();
 		UserDetails admin = User.builder().username("admin")
-				.password("{bcrypt$2a$10$akAbLTt.i2mgafoQiilXsOfch7KtbvKrEO63xdefM/6qI8f/wTp5S").roles("USER", "ADMIN")
+				.password("{$2a$10$2ZcGs4Wl7tBlm.4R8yqjE.MFa.awSBvBXNfKn/13KlrpzF8eEL2Om").roles("USER", "ADMIN")
 				.build();
 
 		return new InMemoryUserDetailsManager(user, admin);
@@ -70,9 +70,18 @@ public class SpringSecurityConfig {
 //        .formLogin().and()
 //        .httpBasic();		
 		http.authorizeRequests()
-        .antMatchers("/","/helloWorld").permitAll()
+        .antMatchers("/","/helloWorld", "/logoutSuccess").permitAll()
         .antMatchers("/hello","/bye","/login","/logout").authenticated()
-        .and().formLogin().loginPage("/myCustomLogin").and()
+        .and()
+        .formLogin()
+        .loginPage("/myCustomLogin").loginProcessingUrl("/process-login").defaultSuccessUrl("/hello", true)
+//        .failureUrl("/login.html?error=true")
+//        .failureHandler(authenticationFailureHandler())
+        .and()
+        .logout().logoutUrl("/logout").logoutSuccessUrl("/logoutSuccess")
+//        .deleteCookies("JSESSIONID")
+//        .logoutSuccessHandler(logoutSuccessHandler())
+        .and()
         .httpBasic();
 		
 		return http.build();

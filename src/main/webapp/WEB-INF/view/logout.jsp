@@ -5,10 +5,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Logout</title>
 </head>
 <body>
-	<p>Spring security Rocks!!</p>
+	<p>Do you want to logout?</p>
 	
 	<form:form action="logout" method="POST">
 	<input type="submit" value="logout">
