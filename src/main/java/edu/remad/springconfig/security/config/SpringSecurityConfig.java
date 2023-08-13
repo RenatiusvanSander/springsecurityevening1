@@ -17,61 +17,70 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-
 @Configuration
 @EnableWebSecurity(debug = true)
 public class SpringSecurityConfig {
-	
+
 	@Value("${spring.websecurity.debug:true}")
-    boolean webSecurityDebug;
+	boolean webSecurityDebug;
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.debug(webSecurityDebug);
-    }
-    
-    /**
-     * Users stores credentials and roles in memory of server.
-     * Reorganize into own service class!
-     * 
-     * @return service tells user details
-     */
-    @Bean
-    public InMemoryUserDetailsManager users() {
-			UserDetails user = User.builder()
-				.username("user")
-				.password("{bcrypt}$2a$10$kLtNvCSnOilfMnmIt8mtI.D0dp231FuXA1VpNvjqxGiU1NVZ.oh1C")
-				.roles("USER")
-				.build();
-			UserDetails admin = User.builder()
-				.username("admin")
-				.password("{bcrypt$2a$10$akAbLTt.i2mgafoQiilXsOfch7KtbvKrEO63xdefM/6qI8f/wTp5S")
-				.roles("USER", "ADMIN")
-				.build();
-			
-			return new InMemoryUserDetailsManager(user, admin);
-    }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-    	String idForEncode = "bcrypt";
-    	Map<String, PasswordEncoder> encoders = new HashMap<>();
-    	encoders.put(idForEncode, new BCryptPasswordEncoder());
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web) -> web.debug(webSecurityDebug);
+	}
 
-    	return
-    	    new DelegatingPasswordEncoder(idForEncode, encoders);
-    }
-    
-    /**
-     * Does form login filter chain and has also http security.
-     * 
-     * @param http similar to spring security xml config for filtering request
-     * @return	created security filter chain, {@link SecurityFilterChain}
-     * @throws Exception
-     */
-    @Bean                                                            
-	public SecurityFilterChain formLoginFilterChain(HttpSecurity http) throws Exception {
-		return http
-			.authorizeHttpRequests().anyRequest().authenticated().and().httpBasic().and().build();
+	/**
+	 * Users stores credentials and roles in memory of server. Reorganize into own
+	 * service class!
+	 * 
+	 * @return service tells user details
+	 */
+	@Bean
+	public InMemoryUserDetailsManager users() {
+		UserDetails user = User.builder().username("user")
+				.password("{bcrypt}$2a$10$kLtNvCSnOilfMnmIt8mtI.D0dp231FuXA1VpNvjqxGiU1NVZ.oh1C").roles("USER").build();
+		UserDetails admin = User.builder().username("admin")
+				.password("{bcrypt$2a$10$akAbLTt.i2mgafoQiilXsOfch7KtbvKrEO63xdefM/6qI8f/wTp5S").roles("USER", "ADMIN")
+				.build();
+
+		return new InMemoryUserDetailsManager(user, admin);
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		String idForEncode = "bcrypt";
+		Map<String, PasswordEncoder> encoders = new HashMap<>();
+		encoders.put(idForEncode, new BCryptPasswordEncoder());
+
+		return new DelegatingPasswordEncoder(idForEncode, encoders);
+	}
+	
+	/**
+	 * Does form login filter chain and has also http security.
+	 * 
+	 * @param http similar to spring security xml config for filtering request
+	 * @return created security filter chain, {@link SecurityFilterChain}
+	 * @throws Exception
+	 */
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//		http.authorizeHttpRequests(authorize -> 
+//		authorize.requestMatchers("/","/helloWorld").permitAll()
+//		.requestMatchers("/hello","/bye","/login","/logout").hasRole("USER").anyRequest().authenticated())
+//        .formLogin().and()
+//        .httpBasic();		
+		http.authorizeRequests()
+        .antMatchers("/","/helloWorld")
+        .permitAll()
+        .and()
+        .authorizeRequests()
+        .antMatchers("/hello","/bye","/login","/logout")
+        .hasRole("USER")
+        .anyRequest()
+        .authenticated()
+        .and().formLogin().and()
+        .httpBasic();
+		
+		return http.build();
 	}
 }
