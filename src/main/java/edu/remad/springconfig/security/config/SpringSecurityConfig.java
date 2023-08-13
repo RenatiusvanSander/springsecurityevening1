@@ -72,8 +72,7 @@ public class SpringSecurityConfig {
 		http.authorizeRequests()
         .antMatchers("/","/helloWorld").permitAll()
         .antMatchers("/hello","/bye","/login","/logout").authenticated()
-        .antMatchers("/myCustomLogin").permitAll()
-        .and().formLogin().and()
+        .and().formLogin().loginPage("/myCustomLogin").and()
         .httpBasic();
 		
 		return http.build();
