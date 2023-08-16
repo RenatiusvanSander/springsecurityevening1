@@ -43,7 +43,7 @@ public class JdbcSecurityConfiguration {
 	public JdbcUserDetailsManager users(DataSource dataSource, PasswordEncoder encoder) {
 		UserDetails admin = User.builder().username("admin").password(encoder.encode("dummyAdmin")).roles("ADMIN").build();
 		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-		jdbcUserDetailsManager.createUser(admin);
+//		jdbcUserDetailsManager.createUser(admin);
 		
 		return jdbcUserDetailsManager;
 	}
