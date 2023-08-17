@@ -55,7 +55,9 @@ public class JdbcSecurityConfiguration {
 		try {
 			jdbcUserDetailsManager.createUser(admin);
 		} catch(CannotGetJdbcConnectionException ex) {
-			System.out.println("#################################### admin exists in data base");
+			System.out.println("#############################");
+			System.out.println("# admin exists in data base #");
+			System.out.println("#############################");
 		}
 
 		return jdbcUserDetailsManager;
