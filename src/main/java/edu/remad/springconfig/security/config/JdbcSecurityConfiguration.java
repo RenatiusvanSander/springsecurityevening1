@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
@@ -47,21 +49,21 @@ public class JdbcSecurityConfiguration {
 				"dev0018524");
 	}
 	
-	@Bean
-	public JdbcUserDetailsManager users(DataSource dataSource, PasswordEncoder encoder) {
-		UserDetails admin = User.builder().username("admin").password(encoder.encode("dummyAdmin")).roles("ADMIN").build();
-		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-
-		try {
-			jdbcUserDetailsManager.createUser(admin);
-		} catch(CannotGetJdbcConnectionException ex) {
-			System.out.println("#############################");
-			System.out.println("# admin exists in data base #");
-			System.out.println("#############################");
-		}
-		
-		return jdbcUserDetailsManager;
-	}
+//	@Bean
+//	public JdbcUserDetailsManager users(DataSource dataSource, PasswordEncoder encoder) {
+//		UserDetails admin = User.builder().username("admin").password(encoder.encode("dummyAdmin")).roles("ADMIN").build();
+//		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+//
+//		try {
+//			jdbcUserDetailsManager.createUser(admin);
+//		} catch(CannotGetJdbcConnectionException ex) {
+//			System.out.println("#############################");
+//			System.out.println("# admin exists in data base #");
+//			System.out.println("#############################");
+//		}
+//		
+//		return jdbcUserDetailsManager;
+//	}
 	
 	/**
 	 * Does form login filter chain and has also http security.
@@ -99,4 +101,13 @@ public class JdbcSecurityConfiguration {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+	
+	@Bean
+    public AuthenticationManager authManager(HttpSecurity http, DataSource dataSource, PasswordEncoder passwordEncoder) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder = 
+            http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
+        
+        return authenticationManagerBuilder.build();
+    }
 }
