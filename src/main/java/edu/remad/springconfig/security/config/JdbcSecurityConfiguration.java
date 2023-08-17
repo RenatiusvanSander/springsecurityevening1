@@ -5,6 +5,8 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -38,12 +40,25 @@ public class JdbcSecurityConfiguration {
 	    
 	    return dataSource;
 	}
+
+	@Bean
+	DataSource dataSource() {
+		return new DriverManagerDataSource("jdbc:mysql://localhost:3306/development001", "springjdbcdevelopment001",
+				"dev0018524");
+	}
 	
 	@Bean
 	public JdbcUserDetailsManager users(DataSource dataSource, PasswordEncoder encoder) {
 		UserDetails admin = User.builder().username("admin").password(encoder.encode("dummyAdmin")).roles("ADMIN").build();
 		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-//		jdbcUserDetailsManager.createUser(admin);
+
+		try {
+			jdbcUserDetailsManager.createUser(admin);
+		} catch(CannotGetJdbcConnectionException ex) {
+			System.out.println("#############################");
+			System.out.println("# admin exists in data base #");
+			System.out.println("#############################");
+		}
 		
 		return jdbcUserDetailsManager;
 	}
