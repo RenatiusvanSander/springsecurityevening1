@@ -5,12 +5,13 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,24 +31,36 @@ public class JdbcSecurityConfiguration {
 
 	@Bean
 	public DataSource createDataSource() {
-	    SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-	    dataSource.setDriverClass(Driver.class);
-	    dataSource.setUrl("jdbc:mysql://localhost:3306/development001");
-	    dataSource.setUsername("springjdbcdevelopment001");
-	    dataSource.setPassword("dev0018524");
-	    
-	    return dataSource;
+		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+		dataSource.setDriverClass(Driver.class);
+		dataSource.setUrl("jdbc:mysql://localhost:3306/development001");
+		dataSource.setUsername("springjdbcdevelopment001");
+		dataSource.setPassword("dev0018524");
+
+		return dataSource;
 	}
-	
+
+	@Bean
+	DataSource dataSource() {
+		return new DriverManagerDataSource("jdbc:mysql://localhost:3306/development001", "springjdbcdevelopment001",
+				"dev0018524");
+	}
+
 	@Bean
 	public JdbcUserDetailsManager users(DataSource dataSource, PasswordEncoder encoder) {
-		UserDetails admin = User.builder().username("admin").password(encoder.encode("dummyAdmin")).roles("ADMIN").build();
+		UserDetails admin = User.builder().username("admin").password(encoder.encode("dummyAdmin")).roles("ADMIN")
+				.build();
 		JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-//		jdbcUserDetailsManager.createUser(admin);
 		
+		try {
+			jdbcUserDetailsManager.createUser(admin);
+		} catch(CannotGetJdbcConnectionException ex) {
+			System.out.println("#################################### admin exists in data base");
+		}
+
 		return jdbcUserDetailsManager;
 	}
-	
+
 	/**
 	 * Does form login filter chain and has also http security.
 	 * 
@@ -62,26 +75,16 @@ public class JdbcSecurityConfiguration {
 //		.requestMatchers("/hello","/bye","/login","/logout").hasRole("USER").anyRequest().authenticated())
 //        .formLogin().and()
 //        .httpBasic();		
-		http.authorizeRequests()
-        .antMatchers("/","/helloWorld", "/logoutSuccess").permitAll()
-        .antMatchers("/hello","/bye","/login","/logout").authenticated()
-        .and()
-        .formLogin()
-        .loginPage("/myCustomLogin").loginProcessingUrl("/process-login").defaultSuccessUrl("/hello", true)
+		http.authorizeRequests().antMatchers("/", "/helloWorld", "/logoutSuccess").permitAll()
+				.antMatchers("/hello", "/bye", "/login", "/logout").authenticated().and().formLogin()
+				.loginPage("/myCustomLogin").loginProcessingUrl("/process-login").defaultSuccessUrl("/hello", true)
 //        .failureUrl("/login.html?error=true")
 //        .failureHandler(authenticationFailureHandler())
-        .and()
-        .logout().logoutUrl("/logout").logoutSuccessUrl("/logoutSuccess")
+				.and().logout().logoutUrl("/logout").logoutSuccessUrl("/logoutSuccess")
 //        .deleteCookies("JSESSIONID")
 //        .logoutSuccessHandler(logoutSuccessHandler())
-        .and()
-        .httpBasic();
-		
+				.and().httpBasic();
+
 		return http.build();
-	}
-	
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
 	}
 }
