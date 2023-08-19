@@ -1,16 +1,24 @@
 package edu.remad.springconfig.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "roles")
 public class Role {
 
 	@Id
@@ -18,4 +26,7 @@ public class Role {
 	private int id;
 	
 	private String name;
+	
+	@ManyToMany(mappedBy = "roles")
+	private List<UserEntity> users = new ArrayList<>();
 }

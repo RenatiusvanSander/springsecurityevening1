@@ -13,23 +13,34 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
 	private String username;
+	
+	private String email;
 	
 	private String password;
 	
 	private Boolean enabled;
 	
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable(name = "user_rules", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns =@JoinColumn(name = "role_id", referencedColumnName = "id"))
+	@JoinTable(name = "user_rules", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+	inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
 	private List<Role> roles = new ArrayList<>();
 }
