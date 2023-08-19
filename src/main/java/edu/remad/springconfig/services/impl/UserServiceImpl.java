@@ -3,6 +3,7 @@ package edu.remad.springconfig.services.impl;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import edu.remad.springconfig.dto.RegistrationDto;
@@ -19,10 +20,13 @@ public class UserServiceImpl implements UserService {
 	
 	private RoleRepository roleRepository;
 	
+	private PasswordEncoder passwordEncoder;
+	
 	@Autowired
-	public UserServiceImpl(UserEntityRepository userRepository, RoleRepository rolesRepository) {
+	public UserServiceImpl(UserEntityRepository userRepository, RoleRepository rolesRepository, PasswordEncoder passwordEncoder) {
 		this.userEntityRepository = userRepository;
 		this.roleRepository = rolesRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 	@Override
@@ -31,7 +35,7 @@ public class UserServiceImpl implements UserService {
 		
 		user.setUsername(registrationDto.getUsername());
 		user.setEmail(registrationDto.getEmail());
-		user.setPassword(registrationDto.getPassword());
+		user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
 		
 		Role role = roleRepository.findByName("USER");
 		user.setRoles(Arrays.asList(role));
