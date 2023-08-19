@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 	public void saveUser(RegistrationDto registrationDto) {
 		UserEntity user = new UserEntity();
 		
-		user.setUsername(registrationDto.getUsername);
+		user.setUsername(registrationDto.getUsername());
 		user.setEmail(registrationDto.getEmail());
 		user.setPassword(registrationDto.getPassword());
 		
