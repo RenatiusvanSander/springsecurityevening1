@@ -83,7 +83,7 @@ public class JdbcSecurityConfiguration {
 //        .formLogin().and()
 //        .httpBasic();		
 		http.authorizeRequests()
-        .antMatchers("/","/helloWorld", "/logoutSuccess").permitAll()
+        .antMatchers("/","/helloWorld", "/logoutSuccess","/signup").permitAll()
         .antMatchers("/hello","/bye","/login","/logout").authenticated()
         .and()
         .formLogin()

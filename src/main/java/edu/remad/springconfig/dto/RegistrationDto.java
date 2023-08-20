@@ -3,6 +3,7 @@ package edu.remad.springconfig.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -20,21 +21,20 @@ import lombok.Setter;
 @Builder
 @Data
 public class RegistrationDto {
-	@NotNull
-	private Long id;
 	
-	@NotEmpty
+	@NotBlank
 	@Min(8)
 	@Max(50)
 	private String username;
 	
-	@NotEmpty
+	@NotBlank
 	@Min(8)
 	@Max(50)
 	@Email
 	private String email;
 	
 	@NotEmpty
-	@Max(50)
+	@Min(8)
+	@Max(500)
 	private String password;
 }

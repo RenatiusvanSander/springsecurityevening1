@@ -33,7 +33,7 @@ public class CustomJpaUserDetailsService implements UserDetailsService {
 			
 			return authUser;
 		} else {
-			throw new UsernameNotFoundException(username);
+			throw new UsernameNotFoundException("Username is not found: " + username);
 		}
 	}
 }
