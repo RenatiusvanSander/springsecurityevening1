@@ -13,7 +13,6 @@ import lombok.ToString;
 @Data
 @Getter
 @Setter
-@Builder
 @ToString
 public class SignupDto {
 

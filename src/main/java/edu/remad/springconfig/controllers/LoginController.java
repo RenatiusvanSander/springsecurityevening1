@@ -1,5 +1,6 @@
 package edu.remad.springconfig.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,6 +14,7 @@ import edu.remad.springconfig.services.impl.UserServiceImpl;
 @Controller
 public class LoginController {
 
+	@Autowired
 	private UserServiceImpl userService;
 
 	@GetMapping("/myCustomLogin")
@@ -32,8 +34,10 @@ public class LoginController {
 			return "redirect:/myCustomLogin";
 		}
 
-		RegistrationDto registrationDto = RegistrationDto.builder().username(signupDto.getUsername())
-				.password(signupDto.getPassword()).email(signupDto.getEmail()).build();
+		RegistrationDto registrationDto = new RegistrationDto();
+		registrationDto.setUsername(signupDto.getUsername());
+		registrationDto.setEmail(signupDto.getEmail());
+		registrationDto.setPassword(signupDto.getPassword());
 		userService.saveUser(registrationDto);
 
 		return "redirect:/myCustomLogin";

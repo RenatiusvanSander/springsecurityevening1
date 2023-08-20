@@ -17,35 +17,34 @@ import edu.remad.springconfig.services.UserService;
 public class UserServiceImpl implements UserService {
 
 	private UserEntityRepository userEntityRepository;
-	
+
 	private RoleRepository roleRepository;
-	
+
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
-	public UserServiceImpl(UserEntityRepository userRepository, RoleRepository rolesRepository, PasswordEncoder passwordEncoder) {
+	public UserServiceImpl(UserEntityRepository userRepository, RoleRepository rolesRepository,
+			PasswordEncoder passwordEncoder) {
 		this.userEntityRepository = userRepository;
 		this.roleRepository = rolesRepository;
 		this.passwordEncoder = passwordEncoder;
 	}
-	
+
 	@Override
 	public void saveUser(RegistrationDto registrationDto) {
-		UserEntity user = new UserEntity();
-		
-		user.setUsername(registrationDto.getUsername());
-		user.setEmail(registrationDto.getEmail());
-		user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
-		
 		Role role = roleRepository.findByName("USER");
-		user.setRoles(Arrays.asList(role));
-		
+		UserEntity user = UserEntity
+				.builder()
+				.username(registrationDto.getUsername())
+				.email(registrationDto.getEmail())
+				.password(passwordEncoder.encode(registrationDto.getPassword())).enabled(true)
+				.roles(Arrays.asList(role)).build();
 		userEntityRepository.save(user);
 	}
 
 	@Override
 	public boolean isUserExisting(String username) {
-		
+
 		UserEntity resultUser = userEntityRepository.findByUsername(username);
 
 		return resultUser == null;

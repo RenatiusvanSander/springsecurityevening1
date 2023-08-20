@@ -27,8 +27,10 @@ public class CustomJpaUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserEntity user = userEntityRepository.findFirstByUsername(username);
 
+		System.out.println("##### User is " + user);
+		
 		if (user != null) {
-			User authUser = new User(user.getEmail(), user.getPassword(), user.getRoles().stream()
+			User authUser = new User(user.getUsername(), user.getPassword(), user.getRoles().stream()
 					.map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList()));
 			
 			return authUser;
