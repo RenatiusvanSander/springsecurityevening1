@@ -3,7 +3,9 @@ package edu.remad.springconfig.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,14 +16,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString
 @Entity(name = "roles")
 public class Role {
 
@@ -31,6 +31,6 @@ public class Role {
 	
 	private String name;
 	
-	@ManyToMany(mappedBy = "roles")
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, mappedBy = "roles")
 	private List<UserEntity> users = new ArrayList<>();
 }

@@ -19,14 +19,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-@ComponentScan({
-    "edu.remad.springconfig"
-})
+@ComponentScan({"edu.remad.springconfig"})
 @EnableJpaRepositories(basePackages = "edu.remad.springconfig.repositories")
 public class JPASecurityConfig {
-
-//	@Autowired
-//    private Environment env;
 	
 	@Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -41,14 +36,14 @@ public class JPASecurityConfig {
         return entityManagerFactoryBean;
     }
 
-    public final Properties additionalProperties() {
+    private final Properties additionalProperties() {
         final Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
         hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "false");
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "false");
         hibernateProperties.setProperty("hibernate.show_sql","true");
-        // hibernateProperties.setProperty("hibernate.globally_quoted_identifiers", "true");
+        hibernateProperties.setProperty("hibernate.format_sql", "true");
         
         return hibernateProperties;
     }

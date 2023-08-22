@@ -4,27 +4,21 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
 @Data
 public class RegistrationDto {
 	
 	@NotBlank
-	@Min(8)
-	@Max(50)
+//	@Min(8)
+//	@Max(50)
 	private String username;
 	
 	@NotBlank
@@ -33,7 +27,7 @@ public class RegistrationDto {
 	@Email
 	private String email;
 	
-	@NotEmpty
+	@NotBlank
 	@Min(8)
 	@Max(500)
 	private String password;
