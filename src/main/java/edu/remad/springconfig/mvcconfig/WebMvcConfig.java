@@ -4,11 +4,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+
+import edu.remad.springconfig.security.interceptors.SecuritySignupFilter;
 
 
 @EnableWebMvc
@@ -34,4 +37,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 	}
+	
+	 @Override
+	    public void addInterceptors(final InterceptorRegistry registry) {
+	        // TODO registry.addInterceptor(new LoggerInterceptor());
+	        // TODO registry.addInterceptor(new UserInterceptor());
+	        // TODO registry.addInterceptor(new SessionTimerInterceptor());
+		 registry.addInterceptor(new SecuritySignupFilter()).addPathPatterns("/process-signup");
+	    }
 }
