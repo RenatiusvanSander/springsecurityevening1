@@ -12,8 +12,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class SignupDto {
-
-	private int id;
 	
 	private String username;
 	
