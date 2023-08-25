@@ -1,7 +1,8 @@
 package edu.remad.springconfig.dto;
 
+import edu.remad.springconfig.validators.annotations.SinglePassword;
+import edu.remad.springconfig.validators.annotations.ValidUsername;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,10 +13,13 @@ import lombok.Setter;
 @Setter
 public class SignupDto {
 	
+	@ValidUsername
 	private String username;
 	
+	@SinglePassword
 	private String password;
 	
+	@SinglePassword
 	private String repeatedPassword;
 	
 	private String email;

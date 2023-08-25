@@ -2,6 +2,8 @@ package edu.remad.springconfig.controllers;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -36,7 +38,7 @@ public class LoginController {
 	}
 
 	@PostMapping("/process-signup")
-	public String processSignUp(SignupDto signupDto) {
+	public String processSignUp(@Valid SignupDto signupDto) {
 
 		if (userService.isUserExisting(signupDto.getUsername())) {
 			return "redirect:/myCustomLogin";
