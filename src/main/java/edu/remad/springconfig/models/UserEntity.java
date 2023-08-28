@@ -12,7 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.Pattern;
 
+import edu.remad.springconfig.appconstants.RegexAppConstants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,10 +33,13 @@ public class UserEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@Pattern(regexp = RegexAppConstants.USERNAME_REGEX)
 	private String username;
 	
+	@Pattern(regexp = RegexAppConstants.EMAIL_REGEX)
 	private String email;
 	
+	@Pattern(regexp = RegexAppConstants.PASSWORD_REGEX)
 	private String password;
 	
 	private Boolean enabled;

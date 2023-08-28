@@ -15,9 +15,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.mysql.cj.jdbc.Driver;
 
+import edu.remad.springconfig.security.filters.TenantFilter;
 import edu.remad.springconfig.services.impl.CustomJpaUserDetailsService;
 
 @Configuration
@@ -78,7 +80,11 @@ public class JdbcSecurityConfiguration {
 //		.requestMatchers("/hello","/bye","/login","/logout").hasRole("USER").anyRequest().authenticated())
 //        .formLogin().and()
 //        .httpBasic();		
-		http.authorizeRequests()
+		http.addFilterAfter(new TenantFilter(), BasicAuthenticationFilter.class)
+		.securityContext((securityContext) -> securityContext
+				.requireExplicitSave(true)
+			)
+		.authorizeRequests()
         .antMatchers("/","/helloWorld", "/logoutSuccess","/signup").permitAll()
         .antMatchers("/hello","/bye","/login","/logout").authenticated()
         .and()
