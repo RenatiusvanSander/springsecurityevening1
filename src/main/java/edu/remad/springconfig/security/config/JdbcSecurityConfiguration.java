@@ -12,10 +12,14 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter.Directive;
 
 import com.mysql.cj.jdbc.Driver;
 
@@ -27,6 +31,8 @@ public class JdbcSecurityConfiguration {
 
 	@Value("${spring.websecurity.debug:true}")
 	boolean webSecurityDebug;
+	
+	private static final ClearSiteDataHeaderWriter.Directive[] COOKIES = Directive.values();
 
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
@@ -35,13 +41,13 @@ public class JdbcSecurityConfiguration {
 
 	@Bean
 	public DataSource createDataSource() {
-	    SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-	    dataSource.setDriverClass(Driver.class);
-	    dataSource.setUrl("jdbc:mysql://localhost:3306/development001");
-	    dataSource.setUsername("springjdbcdevelopment001");
-	    dataSource.setPassword("dev0018524");
-	    
-	    return dataSource;
+		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
+		dataSource.setDriverClass(Driver.class);
+		dataSource.setUrl("jdbc:mysql://localhost:3306/development001");
+		dataSource.setUsername("springjdbcdevelopment001");
+		dataSource.setPassword("dev0018524");
+
+		return dataSource;
 	}
 
 	@Bean
@@ -49,7 +55,7 @@ public class JdbcSecurityConfiguration {
 		return new DriverManagerDataSource("jdbc:mysql://localhost:3306/development001", "springjdbcdevelopment001",
 				"dev0018524");
 	}
-	
+
 //	@Bean
 //	public JdbcUserDetailsManager users(DataSource dataSource, PasswordEncoder encoder) {
 //		UserDetails admin = User.builder().username("admin").password(encoder.encode("dummyAdmin")).roles("ADMIN").build();
@@ -65,7 +71,7 @@ public class JdbcSecurityConfiguration {
 //		
 //		return jdbcUserDetailsManager;
 //	}
-	
+
 	/**
 	 * Does form login filter chain and has also http security.
 	 * 
@@ -79,45 +85,40 @@ public class JdbcSecurityConfiguration {
 //		authorize.requestMatchers("/","/helloWorld").permitAll()
 //		.requestMatchers("/hello","/bye","/login","/logout").hasRole("USER").anyRequest().authenticated())
 //        .formLogin().and()
-//        .httpBasic();		
+//        .httpBasic();
 		http.addFilterAfter(new TenantFilter(), BasicAuthenticationFilter.class)
-		.securityContext((securityContext) -> securityContext
-				.requireExplicitSave(true)
-			)
-		.authorizeRequests()
-        .antMatchers("/","/helloWorld", "/logoutSuccess","/signup").permitAll()
-        .antMatchers("/hello","/bye","/login","/logout").authenticated()
-        .and()
-        .formLogin()
-        .loginPage("/myCustomLogin").loginProcessingUrl("/process-login").defaultSuccessUrl("/hello", true)
+				.securityContext((securityContext) -> securityContext.requireExplicitSave(true))
+				.sessionManagement(
+						session -> session.maximumSessions(1).maxSessionsPreventsLogin(true).expiredUrl("/login"))
+				.authorizeRequests().antMatchers("/", "/helloWorld", "/logoutSuccess", "/signup").permitAll()
+				.antMatchers("/hello", "/bye", "/login", "/logout").authenticated().and().formLogin()
+				.loginPage("/myCustomLogin").loginProcessingUrl("/process-login").defaultSuccessUrl("/hello", true)
 //        .failureUrl("/login.html?error=true")
 //        .failureHandler(authenticationFailureHandler())
-        .and()
-        .logout().logoutUrl("/logout").logoutSuccessUrl("/logoutSuccess")
-//        .deleteCookies("JSESSIONID")
+				.and()
+				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/logoutSuccess").addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(COOKIES))));
 //        .logoutSuccessHandler(logoutSuccessHandler())
-        .and()
-        .httpBasic();
-		
+
 		return http.build();
 	}
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
-    public AuthenticationManager authManager(HttpSecurity http, DataSource dataSource, PasswordEncoder passwordEncoder, CustomJpaUserDetailsService userDetailsService) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = 
-            http.getSharedObject(AuthenticationManagerBuilder.class);
+	public AuthenticationManager authManager(HttpSecurity http, DataSource dataSource, PasswordEncoder passwordEncoder,
+			CustomJpaUserDetailsService userDetailsService) throws Exception {
+		AuthenticationManagerBuilder authenticationManagerBuilder = http
+				.getSharedObject(AuthenticationManagerBuilder.class);
 //        authenticationManagerBuilder.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
-        
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-        authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider);
-        
-        return authenticationManagerBuilder.build();
-    }
+
+		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+		daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+		authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider);
+
+		return authenticationManagerBuilder.build();
+	}
 }
