@@ -16,6 +16,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import edu.remad.springconfig.security.interceptors.SecuritySignupFilter;
+import edu.remad.springconfig.systemenvironment.SystemEnvironment;
+import edu.remad.springconfig.systemenvironment.SystemEnvironmentFactory;
 
 @EnableWebMvc
 @Configuration
@@ -50,12 +52,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	}
 	
 	@Bean
-	public JavaMailSender createJavaMailSender() {
+	public SystemEnvironment systemEnvironment() {
+		return SystemEnvironmentFactory.getInstance();
+	}
+	
+	@Bean
+	public JavaMailSender createJavaMailSender(SystemEnvironment systemEnvironment) {
 	    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-	    mailSender.setHost("smtp.gmail.com");
+	    mailSender.setHost("smtp.web.de");
 	    mailSender.setPort(587);	    
-	    mailSender.setUsername("my.gmail@gmail.com");
-	    mailSender.setPassword("password");
+	    mailSender.setUsername(systemEnvironment.getSmtpUsername());
+	    mailSender.setPassword(systemEnvironment.getSmtpPassword());
 	    
 	    Properties props = mailSender.getJavaMailProperties();
 	    props.put("mail.transport.protocol", "smtp");
