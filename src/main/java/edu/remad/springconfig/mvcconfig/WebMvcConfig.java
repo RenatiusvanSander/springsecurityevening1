@@ -1,7 +1,9 @@
 package edu.remad.springconfig.mvcconfig;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
+import org.springframework.boot.web.servlet.server.Encoding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,9 +13,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import edu.remad.springconfig.security.interceptors.SecuritySignupFilter;
 import edu.remad.springconfig.systemenvironment.SystemEnvironment;
@@ -68,8 +72,27 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	    props.put("mail.transport.protocol", "smtp");
 	    props.put("mail.smtp.auth", "true");
 	    props.put("mail.smtp.starttls.enable", "true");
+	    props.put("mail.properties.mail.smtp.starttls.required","true");
+	    props.put("mail.properties.mail.smtp.ssl.enable","false");
+	    props.put("mail.properties.mail.smtp.timeout", "15000");
+	    props.put("mail.properties.mail.smtp.connectiontimeout", "15000");
+	    props.put("mail.properties.mail.smtp.socketFactory.fallback", "true");
 	    props.put("mail.debug", "true");
 	    
 	    return mailSender;
+	}
+	
+	@Override
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+		registry.freeMarker();
+	}
+	
+	@Bean
+	public FreeMarkerConfigurer freeMarkerConfigurer() {
+		FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
+		configurer.setTemplateLoaderPath("/WEB-INF/templates/freemarker");
+		configurer.setDefaultEncoding(StandardCharsets.UTF_8.name());
+		
+		return configurer;
 	}
 }

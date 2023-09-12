@@ -39,7 +39,7 @@ public class UserEntity {
 	@Pattern(regexp = RegexAppConstants.EMAIL_REGEX)
 	private String email;
 	
-	@Pattern(regexp = RegexAppConstants.PASSWORD_REGEX)
+	@org.hibernate.validator.constraints.NotBlank
 	private String password;
 	
 	private Boolean enabled;

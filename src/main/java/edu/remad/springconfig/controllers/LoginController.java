@@ -2,6 +2,7 @@ package edu.remad.springconfig.controllers;
 
 import java.util.List;
 
+import javax.mail.AuthenticationFailedException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import edu.remad.springconfig.dto.RegistrationDto;
 import edu.remad.springconfig.dto.SignupDto;
 import edu.remad.springconfig.dto.UserDto;
+import edu.remad.springconfig.services.impl.EmailServiceImpl;
 import edu.remad.springconfig.services.impl.UserServiceImpl;
 
 @Controller
@@ -22,9 +24,12 @@ public class LoginController {
 
 	private UserServiceImpl userService;
 
+	private EmailServiceImpl emailService;
+
 	@Autowired
-	public LoginController(UserServiceImpl userService) {
+	public LoginController(UserServiceImpl userService, EmailServiceImpl emailService) {
 		this.userService = userService;
+		this.emailService = emailService;
 	}
 
 	@GetMapping("/myCustomLogin")
@@ -51,17 +56,24 @@ public class LoginController {
 		System.out.println("signupDto zum Speichern" + signupDto);
 		userService.saveUser(registrationDto);
 
+		try {
+			emailService.sendSimpleMessage(signupDto.getEmail(), "Benutzer ist registriert!",
+					"Nachricht ist gesendet.");
+		} catch (Exception ex) {
+			System.out.println(ex);
+		}
+
 		return "redirect:/myCustomLogin";
 	}
-	
+
 	@GetMapping("/get-login-users")
 	@Secured("USER")
 	public ModelAndView getLoginUsers() {
 		List<UserDto> users = userService.getAllUsers();
-		
+
 		ModelAndView model = new ModelAndView("show-users");
 		model.addObject("users", users);
-		
+
 		return model;
 	}
 }
