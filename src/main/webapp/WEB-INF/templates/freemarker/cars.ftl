@@ -5,6 +5,7 @@
   <fieldset>
     <legend>Add Car</legend>
     <form name="car" action="add" method="post">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
       Make : <input type="text" name="make" /><br/>
       Model: <input type="text" name="model" /><br/>
       <input type="submit" value="Save" />

@@ -30,7 +30,7 @@ public class JdbcSecurityConfiguration {
 
 	@Value("${spring.websecurity.debug:true}")
 	boolean webSecurityDebug;
-	
+
 	private static final ClearSiteDataHeaderWriter.Directive[] COOKIES = Directive.values();
 
 	@Bean
@@ -90,12 +90,12 @@ public class JdbcSecurityConfiguration {
 				.sessionManagement(
 						session -> session.maximumSessions(1).maxSessionsPreventsLogin(true).expiredUrl("/login"))
 				.authorizeRequests().antMatchers("/", "/helloWorld", "/logoutSuccess", "/signup").permitAll()
-				.antMatchers("/hello", "/bye", "/login", "/logout").authenticated().and().formLogin()
+				.antMatchers("/hello", "/bye", "/login", "/logout", "/templates/**").authenticated().and().formLogin()
 				.loginPage("/myCustomLogin").loginProcessingUrl("/process-login").defaultSuccessUrl("/hello", true)
 //        .failureUrl("/login.html?error=true")
 //        .failureHandler(authenticationFailureHandler())
-				.and()
-				.logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/logoutSuccess").addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(COOKIES))));
+				.and().csrf().and().logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/logoutSuccess")
+						.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(COOKIES))));
 //        .logoutSuccessHandler(logoutSuccessHandler())
 
 		return http.build();
