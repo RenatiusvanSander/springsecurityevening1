@@ -1,55 +1,57 @@
 package edu.remad.springconfig.systemenvironment;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.remad.springconfig.appconstants.DataSourcesAppConstants;
+import edu.remad.springconfig.appconstants.SmtpAppConstants;
+import edu.remad.springconfig.appconstants.SystemAppConstants;
+
 public class SystemEnvironment {
 
-	private final String appAdmin;
-	private final String appAdminPassword;
-	private final String appUser;
-	private final String appUserPassword;
-	private final String smtpPassword;
-	private final String smtpUsername;
+	private final Map<String, String> properties;
 
 	public SystemEnvironment() {
-		this.appAdmin = "";
-		this.appAdminPassword = "";
-		this.appUser = "";
-		this.appUserPassword = "";
-		this.smtpPassword = "";
-		this.smtpUsername = "";
-
+		this.properties = new HashMap<>();
 	}
 
-	public SystemEnvironment(final String adminUser, final String adminPassword, final String appUser,
-			final String appUserPassword, final String smtpUsername, final String smtpPassword) {
-		appAdmin = adminUser;
-		appAdminPassword = appUserPassword;
-		this.appUser = appUser;
-		this.appUserPassword = appUserPassword;
-		this.smtpUsername = smtpUsername;
-		this.smtpPassword = smtpPassword;
+	public SystemEnvironment(final Map<String, String> properties) {
+		this.properties = properties;
 	}
 
 	public String getAppAdmin() {
-		return appAdmin;
+		return properties.get(SystemAppConstants.TUTOR_ADMIN);
 	}
 
 	public String getAppAdminPassword() {
-		return appAdminPassword;
+		return properties.get(SystemAppConstants.TUTOR_ADMIN_PASSWORD);
 	}
 
 	public String getAppUser() {
-		return appUser;
+		return properties.get(SystemAppConstants.TUTOR_USER);
 	}
 
 	public String getAppUserPassword() {
-		return appUserPassword;
+		return properties.get(SystemAppConstants.TUTOR_USER_PASSWORD);
 	}
 
 	public String getSmtpPassword() {
-		return smtpPassword;
+		return properties.get(SmtpAppConstants.SMTP_USER);
 	}
 
 	public String getSmtpUsername() {
-		return smtpUsername;
+		return properties.get(SmtpAppConstants.SMTP_PASSWORD);
+	}
+
+	public String getAppDataSourcesMysqlUrl() {
+		return properties.get(DataSourcesAppConstants.DATA_SOURCES_MYSQL_URL);
+	}
+
+	public String getAppDataSourcesMysqlUsername() {
+		return properties.get(DataSourcesAppConstants.DATA_SOURCES_MYSQL_USERNAME);
+	}
+
+	public String getAppDataSourcesMysqlPassword() {
+		return properties.get(DataSourcesAppConstants.DATA_SOURCES_MYSQL_PASSWORD);
 	}
 }

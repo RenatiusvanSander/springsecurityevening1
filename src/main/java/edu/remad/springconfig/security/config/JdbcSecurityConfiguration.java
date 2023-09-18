@@ -24,6 +24,7 @@ import com.mysql.cj.jdbc.Driver;
 
 import edu.remad.springconfig.security.filters.TenantFilter;
 import edu.remad.springconfig.services.impl.CustomJpaUserDetailsService;
+import edu.remad.springconfig.systemenvironment.SystemEnvironment;
 
 @Configuration
 public class JdbcSecurityConfiguration {
@@ -39,20 +40,20 @@ public class JdbcSecurityConfiguration {
 	}
 
 	@Bean
-	public DataSource createDataSource() {
+	public DataSource createDataSource(SystemEnvironment systemEnvironment) {
 		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 		dataSource.setDriverClass(Driver.class);
-		dataSource.setUrl("jdbc:mysql://localhost:3306/development001");
-		dataSource.setUsername("springjdbcdevelopment001");
-		dataSource.setPassword("dev0018524");
+		dataSource.setUrl(systemEnvironment.getAppDataSourcesMysqlUrl());
+		dataSource.setUsername(systemEnvironment.getAppDataSourcesMysqlUsername());
+		dataSource.setPassword(systemEnvironment.getAppDataSourcesMysqlPassword());
 
 		return dataSource;
 	}
 
 	@Bean
-	DataSource dataSource() {
-		return new DriverManagerDataSource("jdbc:mysql://localhost:3306/development001", "springjdbcdevelopment001",
-				"dev0018524");
+	DataSource dataSource(SystemEnvironment systemEnvironment) {
+		return new DriverManagerDataSource(systemEnvironment.getAppDataSourcesMysqlUrl(),
+				systemEnvironment.getAppDataSourcesMysqlUsername(), systemEnvironment.getAppDataSourcesMysqlPassword());
 	}
 
 //	@Bean

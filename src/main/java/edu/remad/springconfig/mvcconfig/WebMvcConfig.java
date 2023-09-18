@@ -3,7 +3,6 @@ package edu.remad.springconfig.mvcconfig;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import org.springframework.boot.web.servlet.server.Encoding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
