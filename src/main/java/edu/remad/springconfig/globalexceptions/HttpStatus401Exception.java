@@ -3,20 +3,19 @@ package edu.remad.springconfig.globalexceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 
-public class HttpStatus500Exception extends HttpStatusCodeException implements HttpStatusException {
+public class HttpStatus401Exception extends HttpStatusCodeException implements HttpStatusException {
 
+	private static final long serialVersionUID = 6763784279768963086L;
 	private final String message;
 	private final ErrorInfo errorInfo;
 	private final Throwable cause;
-
-	public HttpStatus500Exception(String message, Throwable cause, ErrorInfo info) {
+	
+	public HttpStatus401Exception(String message, Throwable cause, ErrorInfo info) {
 		super(info.getError().getHttpStatus());
 		this.message = message;
 		this.cause = cause;
 		errorInfo = info;
 	}
-
-	private static final long serialVersionUID = 1L;
 
 	@Override
 	public String getUrl() {
@@ -57,7 +56,7 @@ public class HttpStatus500Exception extends HttpStatusCodeException implements H
 	public ErrorInfo getErrorInfo() {
 		return errorInfo;
 	}
-
+	
 	@Override
 	public Throwable getCause() {
 		return cause;
