@@ -19,6 +19,6 @@ public interface EmailService {
 	void sendMessageUsingThymeleafTemplate(String to, String subject, Map<String, Object> templateModel)
 			throws IOException, MessagingException, OperationNotSupportedException;
 
-	void sendMessageUsingFreemarkerTemplate(String to, String subject, Map<String, Object> templateModel)
+	void sendMessageUsingFreemarkerTemplate(String to, String subject, String templateName, Map<String, Object> templateModel)
 			throws IOException, TemplateException, MessagingException, OperationNotSupportedException;
 }

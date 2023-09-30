@@ -14,9 +14,12 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import edu.remad.springconfig.services.EmailService;
 import edu.remad.springconfig.systemenvironment.SystemEnvironment;
+import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 @Service
@@ -27,6 +30,9 @@ public class EmailServiceImpl implements EmailService {
 	
 	@Autowired
 	private SystemEnvironment env;
+	
+	@Autowired
+	private FreeMarkerConfigurer freeMarkerConfig;
 
 	@Override
 	public void sendSimpleMessage(String to, String subject, String text) {
@@ -42,14 +48,7 @@ public class EmailServiceImpl implements EmailService {
 
 	@Override
 	public void sendSimpleMessageUsingTemplate(String to, String subject, String... templateModel) throws OperationNotSupportedException {
-		SimpleMailMessage emailMessage = new SimpleMailMessage();
-		emailMessage.setFrom(env.getSmtpUsername());
-		emailMessage.setTo(to);
-		emailMessage.setSubject(subject);
-		emailMessage.setText(text);
-		emailMessage.setSentDate(Date.valueOf( LocalDateTime.now().toLocalDate()));
-		
-		mailSender.send(emailMessage);
+		throw new OperationNotSupportedException("This method is not supported: sendMessageWithAttachment.");
 	}
 
 	@Override
@@ -64,9 +63,12 @@ public class EmailServiceImpl implements EmailService {
 	}
 
 	@Override
-	public void sendMessageUsingFreemarkerTemplate(String to, String subject, Map<String, Object> templateModel)
+	public void sendMessageUsingFreemarkerTemplate(String to, String subject, String templateName ,Map<String, Object> templateModel)
 			throws IOException, TemplateException, MessagingException, OperationNotSupportedException {
-		throw new OperationNotSupportedException("This method is not supported: sendMessageUsingFreemarkerTemplate.");
+		Template template = freeMarkerConfig.getConfiguration().getTemplate(templateName);
+		String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, templateModel);
+		
+		sendHtmlMail(to, subject, html);
 	}
 	
 	private void sendHtmlMail(String to, String subject, String htmlBody) throws MessagingException {
