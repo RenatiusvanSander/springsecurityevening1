@@ -25,6 +25,12 @@ import freemarker.template.TemplateException;
 @Service
 public class EmailServiceImpl implements EmailService {
 	
+	public static final String VERIFICATION_LINK_SUBJECT = "Activate your pupil account";
+	
+	public static final String VERIFICATION_LINK_KEY = "verificationLink";
+	
+	public static final String EMAIL_TITLE_KEY= "emailTitle";
+	
 	@Autowired
 	private JavaMailSender mailSender;
 	

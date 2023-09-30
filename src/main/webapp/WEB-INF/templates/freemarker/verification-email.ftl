@@ -4,6 +4,6 @@
 </head>
 <body>
 Your verification link has been sent.
-<a href="${verificationLink}">Verification Link</a>
+Just click <a href="${verificationLink}">Verification Link</a>
 </body>
 </html>

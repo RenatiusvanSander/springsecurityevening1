@@ -1,7 +1,6 @@
 package edu.remad.springconfig.services.impl;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,12 +57,22 @@ public class UserServiceImpl implements UserService {
 		return resultUser != null;
 	}
 
+	@Override
 	public List<UserDto> getAllUsers() {
 		return userEntityRepository.findAll().stream().map(user -> new UserDto()).collect(Collectors.toList());
 	}
 	
 	public String[] createRolesArray(List<Role> roles) {
 		return roles.stream().map(Role::getName).toArray(String[]::new);
+	}
+
+	@Override
+	public void activateUser(String email) {
+		UserEntity user = userEntityRepository.findByEmail(email);
 		
+		if(!user.getEnabled()) {
+			user.setEnabled(true);
+			userEntityRepository.saveAndFlush(user);
+		}
 	}
 }

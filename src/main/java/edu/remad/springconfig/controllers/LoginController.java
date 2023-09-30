@@ -1,8 +1,8 @@
 package edu.remad.springconfig.controllers;
 
 import java.util.List;
+import java.util.Map;
 
-import javax.mail.AuthenticationFailedException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,25 +11,37 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import edu.remad.springconfig.dto.RegistrationDto;
 import edu.remad.springconfig.dto.SignupDto;
 import edu.remad.springconfig.dto.UserDto;
+import edu.remad.springconfig.services.EmailService;
+import edu.remad.springconfig.services.UserService;
+import edu.remad.springconfig.services.VerificationLinkCreationService;
 import edu.remad.springconfig.services.impl.EmailServiceImpl;
-import edu.remad.springconfig.services.impl.UserServiceImpl;
 
 @Controller
 public class LoginController {
 
-	private UserServiceImpl userService;
+	public static final String SIGNUP = "/signup";
 
-	private EmailServiceImpl emailService;
+	public static final String ACTIVATE_SIGNUP = "/activate-signup";
+	
+	public static final String VERIFICATION_EMAIL_TEMPLATE_NAME = "verification-email.ftl";
+
+	private UserService userService;
+
+	private EmailService emailService;
+	
+	private VerificationLinkCreationService verificationLinkCreationService;
 
 	@Autowired
-	public LoginController(UserServiceImpl userService, EmailServiceImpl emailService) {
+	public LoginController(UserService userService, EmailService emailService, VerificationLinkCreationService verificationLinkCreationService) {
 		this.userService = userService;
 		this.emailService = emailService;
+		this.verificationLinkCreationService = verificationLinkCreationService;
 	}
 
 	@GetMapping("/myCustomLogin")
@@ -37,7 +49,7 @@ public class LoginController {
 		return "login";
 	}
 
-	@GetMapping("/signup")
+	@GetMapping(SIGNUP)
 	public String signUp(@ModelAttribute("signupdto") SignupDto signupDto) {
 		return "signup";
 	}
@@ -57,8 +69,10 @@ public class LoginController {
 		userService.saveUser(registrationDto);
 
 		try {
+			Map<String, Object> templateModel = verificationLinkCreationService.createVerficationLinkHtml(signupDto.getEmail());
 			emailService.sendSimpleMessage(signupDto.getEmail(), "Benutzer ist registriert!",
 					"Nachricht ist gesendet.");
+			// emailService.sendMessageUsingFreemarkerTemplate(signupDto.getEmail(), EmailServiceImpl.VERIFICATION_LINK_SUBJECT, VERIFICATION_EMAIL_TEMPLATE_NAME, templateModel);
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}
@@ -74,6 +88,13 @@ public class LoginController {
 		ModelAndView model = new ModelAndView("show-users");
 		model.addObject("users", users);
 
+		return model;
+	}
+	
+	@GetMapping(ACTIVATE_SIGNUP)
+	public ModelAndView activateSignup(@RequestParam(required = true) String verificationNumber) {
+		ModelAndView model = new ModelAndView("activated-signup");
+		
 		return model;
 	}
 }
