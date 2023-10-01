@@ -17,9 +17,13 @@ import org.springframework.web.servlet.ModelAndView;
 import edu.remad.springconfig.dto.RegistrationDto;
 import edu.remad.springconfig.dto.SignupDto;
 import edu.remad.springconfig.dto.UserDto;
+import edu.remad.springconfig.globalexceptions.Error;
+import edu.remad.springconfig.globalexceptions.ErrorInfo;
+import edu.remad.springconfig.globalexceptions.HttpStatus404Exception;
 import edu.remad.springconfig.services.EmailService;
 import edu.remad.springconfig.services.UserService;
 import edu.remad.springconfig.services.VerificationLinkCreationService;
+import edu.remad.springconfig.services.VerificationService;
 import edu.remad.springconfig.services.impl.EmailServiceImpl;
 
 @Controller
@@ -36,12 +40,15 @@ public class LoginController {
 	private EmailService emailService;
 	
 	private VerificationLinkCreationService verificationLinkCreationService;
+	
+	private VerificationService verificationService;
 
 	@Autowired
-	public LoginController(UserService userService, EmailService emailService, VerificationLinkCreationService verificationLinkCreationService) {
+	public LoginController(UserService userService, EmailService emailService, VerificationLinkCreationService verificationLinkCreationService, VerificationService verificationService) {
 		this.userService = userService;
 		this.emailService = emailService;
 		this.verificationLinkCreationService = verificationLinkCreationService;
+		this.verificationService = verificationService;
 	}
 
 	@GetMapping("/myCustomLogin")
@@ -70,9 +77,9 @@ public class LoginController {
 
 		try {
 			Map<String, Object> templateModel = verificationLinkCreationService.createVerficationLinkHtml(signupDto.getEmail());
-			emailService.sendSimpleMessage(signupDto.getEmail(), "Benutzer ist registriert!",
-					"Nachricht ist gesendet.");
-			// emailService.sendMessageUsingFreemarkerTemplate(signupDto.getEmail(), EmailServiceImpl.VERIFICATION_LINK_SUBJECT, VERIFICATION_EMAIL_TEMPLATE_NAME, templateModel);
+			//emailService.sendSimpleMessage(signupDto.getEmail(), "Benutzer ist registriert!",
+				//	"Nachricht ist gesendet.");
+			emailService.sendMessageUsingFreemarkerTemplate(signupDto.getEmail(), EmailServiceImpl.VERIFICATION_LINK_SUBJECT, VERIFICATION_EMAIL_TEMPLATE_NAME, templateModel);
 		} catch (Exception ex) {
 			System.out.println(ex);
 		}
@@ -92,9 +99,17 @@ public class LoginController {
 	}
 	
 	@GetMapping(ACTIVATE_SIGNUP)
-	public ModelAndView activateSignup(@RequestParam(required = true) String verificationNumber) {
-		ModelAndView model = new ModelAndView("activated-signup");
+	public String activateSignup(@RequestParam(required = true) String verificationNumber) {
+		boolean isVerified = verificationService.isVerified(verificationNumber);
 		
-		return model;
+		if(isVerified) {
+			String email = verificationService.getEmail(verificationNumber);
+			userService.activateUser(email);
+		} else {
+			ErrorInfo errorInfo = new ErrorInfo(ACTIVATE_SIGNUP, Error.HTTP_404_ERROR, "Was never signed up", "Error: User was never signed up!");
+			throw new HttpStatus404Exception("Please sign up again. Your verification was not found.", new Throwable(), errorInfo);
+		}
+		
+		return "activated-signup";
 	}
 }

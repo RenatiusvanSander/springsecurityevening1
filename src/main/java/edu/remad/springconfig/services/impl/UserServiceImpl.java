@@ -62,6 +62,7 @@ public class UserServiceImpl implements UserService {
 		return userEntityRepository.findAll().stream().map(user -> new UserDto()).collect(Collectors.toList());
 	}
 	
+	@Override
 	public String[] createRolesArray(List<Role> roles) {
 		return roles.stream().map(Role::getName).toArray(String[]::new);
 	}

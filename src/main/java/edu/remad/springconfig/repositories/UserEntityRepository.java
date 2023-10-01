@@ -1,7 +1,6 @@
 package edu.remad.springconfig.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import edu.remad.springconfig.models.UserEntity;
 

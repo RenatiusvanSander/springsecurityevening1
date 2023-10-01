@@ -6,7 +6,9 @@ public interface VerificationService {
 
 	boolean saveVerificationNumber(String email, String verficationNumber);
 	
-	boolean isVerified();
+	boolean isVerified(String verificationNumber);
 	
 	void deleteVerification() throws OperationNotSupportedException;
+
+	String getEmail(String verificationNumber);
 }
