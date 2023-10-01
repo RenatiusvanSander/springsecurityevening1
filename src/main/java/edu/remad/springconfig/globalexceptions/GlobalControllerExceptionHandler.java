@@ -24,6 +24,9 @@ public class GlobalControllerExceptionHandler {
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Internal Server Error")
 	@ExceptionHandler(HttpStatusCodeException.class)
 	public ModelAndView handleHttpException(HttpServletRequest req, HttpStatusException exception) {
-		return new ModelAndView();
+		ModelAndView modelAndView = new ModelAndView(exception.getUrl());
+		modelAndView.addObject(exception);
+		
+		return modelAndView;
 	}
 }

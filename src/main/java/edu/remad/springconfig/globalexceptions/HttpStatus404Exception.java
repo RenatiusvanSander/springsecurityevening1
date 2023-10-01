@@ -9,7 +9,7 @@ public class HttpStatus404Exception extends HttpStatusCodeException implements H
 	private final Throwable cause;
 	private final ErrorInfo errorInfo;
 	
-	protected HttpStatus404Exception(String message, Throwable cause, ErrorInfo info) {
+	public HttpStatus404Exception(String message, Throwable cause, ErrorInfo info) {
 		super(info.getError().getHttpStatus());
 		this.message = message;
 		this.cause = cause;
