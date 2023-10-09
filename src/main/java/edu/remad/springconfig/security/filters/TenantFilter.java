@@ -20,7 +20,7 @@ public class TenantFilter extends GenericFilterBean {
 			throws IOException, ServletException {
 		String tenantId = ((HttpServletRequest)request).getHeader("X-Tenant-Id");
 
-		if (!request.getRemoteAddr().equals(IPV6_LOCALHOST) || tenantId != null ){
+		if (!(request.getRemoteAddr().contentEquals("127.0.0.1") || request.getRemoteAddr().equals(IPV6_LOCALHOST)) || tenantId != null ){
 			throw new AccessDeniedException("Your IP-address is not allowed");
 		}
 		

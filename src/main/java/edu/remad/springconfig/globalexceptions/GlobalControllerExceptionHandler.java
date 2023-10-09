@@ -1,11 +1,16 @@
 package edu.remad.springconfig.globalexceptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.servlet.ModelAndView;
@@ -22,11 +27,12 @@ public class GlobalControllerExceptionHandler {
 	}
 	
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Internal Server Error")
-	@ExceptionHandler(HttpStatusCodeException.class)
-	public ModelAndView handleHttpException(HttpServletRequest req, HttpStatusException exception) {
-		ModelAndView modelAndView = new ModelAndView(exception.getUrl());
-		modelAndView.addObject(exception);
+	@ExceptionHandler(HttpStatus500Exception.class)
+	public String handleHttpException(@ModelAttribute("model") ModelMap model, HttpServletRequest req, HttpStatusException exception) {
+		List<String> exceptionContent = new ArrayList<>();
+		exceptionContent.add("Test Ex");
+		model.addAttribute("exceptionContent", exceptionContent);
 		
-		return modelAndView;
+		return "api-error";
 	}
 }
