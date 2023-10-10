@@ -1,4 +1,3 @@
-<#list model["exceptionContent"] as content>
 <html>
     <head>
         <title>
@@ -6,7 +5,7 @@
         <style>
         .exception-container {
         margin: 0 auto;
-        font-size: 400;
+        font-weight: 400;
         color: black;
         background-color: light-blue;
         border: 1px solid light-grey;
@@ -15,9 +14,7 @@
     </head>
     <body>
         <div class="exception-container">
-            Test
-            ${content}
+            ${exceptionContent}
         </div>
     </body>
 </html>
-</#list>

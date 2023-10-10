@@ -3,7 +3,7 @@ package edu.remad.springconfig.globalexceptions;
 import org.springframework.http.HttpStatus;
 
 public enum Error {
-	HTTP_500_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"Internal Server Error","ERR_500","http-500-error", "remad@web.de", "Please contact by errors our support."),
+	HTTP_500_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"Internal Server Error","ERR_500","api-error", "remad@web.de", "Please contact by errors our support."),
 	HTTP_404_ERROR(HttpStatus.NOT_FOUND, "Not found", "ERR_404","http-404-error", "remad@web.de", "Please contact by errors our support."),
 	HTTP_403_ERROR(HttpStatus.FORBIDDEN,"Forbidden","ERR_403","http-403-error","remad@web.de","Please contact by errors our support."),
 	HTTP_401_ERROR(HttpStatus.UNAUTHORIZED,"Unauthorized","ERR_401","http-401-error","remad@web.de","Please contact by errors our support.");

@@ -26,7 +26,12 @@ public class HttpStatusExceptionController {
 		String url = REQUEST_MAPPING_EXCEPTIONS + GET_MAPPING_500;
 		ErrorInfo errorInfo = new ErrorInfo(url, Error.HTTP_500_ERROR, "Test HTTP Status 500", "HTTP 500 thrown");
 		
-		throw new HttpStatus500Exception("Upps here happened a Http Status 500 error", new Throwable(), errorInfo);
+		HttpStatus500Exception exception = new HttpStatus500Exception("Upps here happened a Http Status 500 error", new Throwable(), errorInfo);
+		List<HttpStatus500Exception> exceptionContent = new ArrayList<>();
+		exceptionContent.add(exception);
+		model.addAttribute("exceptionContent", exceptionContent);
+		
+		throw exception;
 	}
 	
 	@GetMapping(value = GET_API_ERROR)
@@ -35,9 +40,7 @@ public class HttpStatusExceptionController {
 		ErrorInfo errorInfo = new ErrorInfo(url, Error.HTTP_500_ERROR, "Test HTTP Status 500", "HTTP 500 thrown");
 		HttpStatus500Exception ex = new HttpStatus500Exception("Upps here happened a Http Status 500 error", new Throwable(), errorInfo);
 		
-		List<String> exceptionContent = new ArrayList<>();
-		exceptionContent.add(ex.getAdditionalText());
-		model.addAttribute("exceptionContent", exceptionContent);
+		model.addAttribute("exceptionContent", ex.getAdditionalText());
 		
 		return "api-error";
 	}
