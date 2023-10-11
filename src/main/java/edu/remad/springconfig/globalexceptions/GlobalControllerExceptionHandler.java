@@ -23,13 +23,16 @@ public class GlobalControllerExceptionHandler {
 
 	@ExceptionHandler(HttpStatus500Exception.class)
 	public ModelAndView handleHttpStatus500Exception(HttpStatus500Exception exception) {
-		ModelMap modelMap = new ModelMap();
-		modelMap.addAttribute("exceptionContent", exception.getAdditionalText());
-		
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addAllObjects(modelMap);
-		modelAndView.setViewName(exception.getTemplate());
+		ModelAndView modelAndView = populateModelAndView(new ModelAndView(), exception);
 		
 		return modelAndView;
+	}
+	
+	private ModelAndView populateModelAndView(ModelAndView view, HttpStatus500Exception exception) {
+		ModelMap modelMap = ErrorUtils.fillExceptionModelMap(exception);
+		view.addAllObjects(modelMap);
+		view.setViewName(exception.getTemplate());
+		
+		return view;
 	}
 }

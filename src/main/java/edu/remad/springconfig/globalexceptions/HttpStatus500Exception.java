@@ -67,4 +67,9 @@ public class HttpStatus500Exception extends HttpStatusCodeException implements H
 	public String getNestedErrorMessage() {
 		return message;
 	}
+	
+	@Override
+	public String getMessage() {
+		return errorInfo.getError().getMessage();
+	}
 }
