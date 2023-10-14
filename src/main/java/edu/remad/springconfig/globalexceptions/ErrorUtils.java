@@ -7,7 +7,7 @@ public final class ErrorUtils {
 	private ErrorUtils() {
 	}
 
-	public static ModelMap fillExceptionModelMap(HttpStatus500Exception exception) {
+	public static ModelMap fillExceptionModelMap(HttpStatusException exception) {
 		ModelMap modelMap = new ModelMap();
 		modelMap.addAttribute("code", exception.getCode());
 		modelMap.addAttribute("email", exception.getEMail());

@@ -62,6 +62,11 @@ public class HttpStatus404Exception extends HttpStatusCodeException implements H
 	public Throwable getCause() {
 		return cause;
 	}
+	
+	@Override
+	public String getMessage() {
+		return errorInfo.getError().getMessage();
+	}
 
 	@Override
 	public String getNestedErrorMessage() {

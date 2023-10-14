@@ -63,6 +63,11 @@ public class HttpStatus401Exception extends HttpStatusCodeException implements H
 	}
 
 	@Override
+	public String getMessage() {
+		return errorInfo.getError().getMessage();
+	}
+	
+	@Override
 	public String getNestedErrorMessage() {
 		return message;
 	}
