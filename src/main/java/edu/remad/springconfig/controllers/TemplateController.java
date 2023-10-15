@@ -54,4 +54,9 @@ public class TemplateController {
         
         return "commons";
     }
+	
+	@GetMapping(value = "/spring-messages")
+    public String showSpringMessage(@ModelAttribute("model") ModelMap model) {
+        return "spring-messages";
+    }
 }

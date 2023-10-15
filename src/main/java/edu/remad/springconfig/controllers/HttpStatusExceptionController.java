@@ -38,7 +38,7 @@ public class HttpStatusExceptionController {
 		String url = REQUEST_MAPPING_EXCEPTIONS + GET_MAPPING_401;
 		ErrorInfo errorInfo = new ErrorInfo(url, Error.HTTP_401_ERROR, "Test HTTP Status 401", "HTTP 401 thrown");
 		
-		throw new HttpStatus401Exception("Upps, you are unathorized..", new Throwable(), errorInfo);
+		throw new HttpStatus401Exception("Upps, you are unauthorized..", new Throwable(), errorInfo);
 	}
 
 	@GetMapping(value = GET_MAPPING_403)

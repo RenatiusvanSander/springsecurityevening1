@@ -84,7 +84,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
-		registry.freeMarker();
+		registry.freeMarker().cache(true).cacheLimit(1000);
 	}
 	
 	@Bean
@@ -103,7 +103,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Bean(name="messageSource")
 	public ResourceBundleMessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-		messageSource.addBasenames("messages/messages");
+		messageSource.addBasenames("messages/messages","messages/welcomes");
 		messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
 		
 		return messageSource;
