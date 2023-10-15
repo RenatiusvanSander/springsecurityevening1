@@ -94,7 +94,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		
 		FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
 		configurer.setTemplateLoaderPath("/WEB-INF/templates/freemarker");
-		configurer.setDefaultEncoding(StandardCharsets.UTF_8.name());
+		configurer.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
 		configurer.setFreemarkerSettings(properties);
 		
 		return configurer;
