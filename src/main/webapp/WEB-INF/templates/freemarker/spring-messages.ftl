@@ -3,5 +3,6 @@
 </div>
 <div>
   <@spring.message code="wordl"/>
+  <br />
   <@spring.message code="welcome"/>
 </div>
