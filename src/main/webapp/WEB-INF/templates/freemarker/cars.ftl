@@ -24,4 +24,5 @@
       </tr>
     </#list>
   </table>
+  <<@spring.message code="wordl"/>
 </div>

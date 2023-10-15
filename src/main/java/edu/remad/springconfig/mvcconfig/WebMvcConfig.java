@@ -6,6 +6,7 @@ import java.util.Properties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -88,10 +89,23 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	
 	@Bean
 	public FreeMarkerConfigurer freeMarkerConfigurer() {
+		Properties properties = new Properties();
+		properties.put("auto_import", "/spring.ftl as spring");
+		
 		FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
 		configurer.setTemplateLoaderPath("/WEB-INF/templates/freemarker");
 		configurer.setDefaultEncoding(StandardCharsets.UTF_8.name());
+		configurer.setFreemarkerSettings(properties);
 		
 		return configurer;
+	}
+	
+	@Bean(name="messageSource")
+	public ResourceBundleMessageSource messageSource() {
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		messageSource.addBasenames("messages/messages");
+		messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+		
+		return messageSource;
 	}
 }

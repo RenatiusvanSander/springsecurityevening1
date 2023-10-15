@@ -2,6 +2,8 @@ package edu.remad.springconfig.globalexceptions;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.ModelMap;
@@ -12,6 +14,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
+	
+	@Autowired
+	ResourceBundleMessageSource messageSource;
 	
 	@ResponseStatus(value = HttpStatus.CONFLICT, reason = "Data integrity violation")
 	@ExceptionHandler(DataIntegrityViolationException.class)
