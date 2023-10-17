@@ -15,9 +15,12 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+
+import com.thoughtworks.qdox.model.impl.DefaultJavaAnnotation;
 
 import edu.remad.springconfig.security.interceptors.SecuritySignupFilter;
 import edu.remad.springconfig.systemenvironment.SystemEnvironment;
@@ -53,6 +56,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		// TODO registry.addInterceptor(new UserInterceptor());
 		// TODO registry.addInterceptor(new SessionTimerInterceptor());
 		registry.addInterceptor(new SecuritySignupFilter()).addPathPatterns("/process-signup");
+		registry.addInterceptor(localeChangeInterceptor());
 	}
 	
 	@Bean
@@ -104,8 +108,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public ResourceBundleMessageSource messageSource() {
 		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
 		messageSource.addBasenames("messages/messages","messages/welcomes");
-		messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+		messageSource.setDefaultEncoding("UTF-8");
 		
 		return messageSource;
+	}
+	
+	@Bean
+	public LocaleChangeInterceptor localeChangeInterceptor() {
+		LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+		
+		return localeChangeInterceptor;
 	}
 }
