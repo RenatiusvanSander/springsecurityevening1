@@ -1,7 +1,5 @@
 package edu.remad.springconfig.services.impl;
 
-import javax.naming.OperationNotSupportedException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +11,7 @@ import edu.remad.springconfig.services.VerificationService;
 public class VerificationServiceImpl implements VerificationService {
 
 	private final VerificationLinkNumberRepository verificationLinkNumberRepository;
+	public static final String VERIFICATION_NUMBER_KEY = "VERIFICATION_NUMBER_KEY";
 
 	@Autowired
 	public VerificationServiceImpl(VerificationLinkNumberRepository verificationLinkNumberRepository) {
@@ -45,8 +44,8 @@ public class VerificationServiceImpl implements VerificationService {
 	}
 
 	@Override
-	public void deleteVerification() throws OperationNotSupportedException {
-		throw new OperationNotSupportedException("This method is not supported: deleteVerification.");
+	public void deleteVerification(String email) {
+		verificationLinkNumberRepository.deleteById(email);
 	}
 
 	@Override

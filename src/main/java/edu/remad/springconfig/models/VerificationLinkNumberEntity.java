@@ -2,7 +2,6 @@ package edu.remad.springconfig.models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.constraints.NotEmpty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +16,7 @@ import lombok.Setter;
 public class VerificationLinkNumberEntity {
 	
 	@Id
-	@NotEmpty
+	@org.hibernate.validator.constraints.Email
 	private String email;
 	
 	@org.hibernate.validator.constraints.NotBlank

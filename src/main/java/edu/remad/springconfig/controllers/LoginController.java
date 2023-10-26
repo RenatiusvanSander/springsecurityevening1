@@ -26,6 +26,7 @@ import edu.remad.springconfig.services.UserService;
 import edu.remad.springconfig.services.VerificationLinkCreationService;
 import edu.remad.springconfig.services.VerificationService;
 import edu.remad.springconfig.services.impl.EmailServiceImpl;
+import edu.remad.springconfig.services.impl.VerificationServiceImpl;
 
 @Controller
 public class LoginController {
@@ -35,19 +36,20 @@ public class LoginController {
 	public static final String SIGNUP = "/signup";
 
 	public static final String ACTIVATE_SIGNUP = "/activate-signup";
-	
+
 	public static final String VERIFICATION_EMAIL_TEMPLATE_NAME = "verification-email.ftl";
 
 	private UserService userService;
 
 	private EmailService emailService;
-	
+
 	private VerificationLinkCreationService verificationLinkCreationService;
-	
+
 	private VerificationService verificationService;
 
 	@Autowired
-	public LoginController(UserService userService, EmailService emailService, VerificationLinkCreationService verificationLinkCreationService, VerificationService verificationService) {
+	public LoginController(UserService userService, EmailService emailService,
+			VerificationLinkCreationService verificationLinkCreationService, VerificationService verificationService) {
 		this.userService = userService;
 		this.emailService = emailService;
 		this.verificationLinkCreationService = verificationLinkCreationService;
@@ -73,18 +75,24 @@ public class LoginController {
 
 		RegistrationDto registrationDto = RegistrationDto.builder().username(signupDto.getUsername())
 				.email(signupDto.getEmail()).password(signupDto.getPassword()).build();
-
-		System.out.println("###### registrationDto" + registrationDto);
-		System.out.println("signupDto zum Speichern" + signupDto);
 		userService.saveUser(registrationDto);
 
 		try {
-			Map<String, Object> templateModel = verificationLinkCreationService.createVerficationLinkHtml(signupDto.getEmail());
-			//emailService.sendSimpleMessage(signupDto.getEmail(), "Benutzer ist registriert!",
-				//	"Nachricht ist gesendet.");
-			emailService.sendMessageUsingFreemarkerTemplate(signupDto.getEmail(), EmailServiceImpl.VERIFICATION_LINK_SUBJECT, VERIFICATION_EMAIL_TEMPLATE_NAME, templateModel);
+			String email = signupDto.getEmail();
+			Map<String, Object> templateModel = verificationLinkCreationService.createVerficationLinkHtml(email);
+
+			String verificationNumber = (String) templateModel.get(VerificationServiceImpl.VERIFICATION_NUMBER_KEY);
+			boolean isSaved = verificationService.saveVerificationNumber(email, "" + verificationNumber);
+			if (!isSaved) {
+				ErrorInfo errorInfo = new ErrorInfo(PROCESS_SIGNUP, Error.HTTP_500_ERROR,
+						"Verification number not saved!", "");
+				throw new HttpStatus500Exception("Verification Number is not stored.", new Throwable(), errorInfo);
+			}
+
+			emailService.sendMessageUsingFreemarkerTemplate(signupDto.getEmail(),
+					EmailServiceImpl.VERIFICATION_LINK_SUBJECT, VERIFICATION_EMAIL_TEMPLATE_NAME, templateModel);
 		} catch (Exception ex) {
-			String additionalText = "Mailer had error in sending activation e-mail.";
+			String additionalText = "Signup had an error.";
 			ErrorInfo info = new ErrorInfo(PROCESS_SIGNUP, Error.HTTP_500_ERROR, additionalText, ex.getMessage());
 			throw new HttpStatus500Exception(ACTIVATE_SIGNUP, ex.getCause(), info);
 		}
@@ -102,19 +110,31 @@ public class LoginController {
 
 		return model;
 	}
-	
+
 	@GetMapping(ACTIVATE_SIGNUP)
 	public String activateSignup(@RequestParam(required = true) String verificationNumber) {
-		boolean isVerified = verificationService.isVerified(verificationNumber);
-		
-		if(isVerified) {
-			String email = verificationService.getEmail(verificationNumber);
-			userService.activateUser(email);
-		} else {
-			ErrorInfo errorInfo = new ErrorInfo(ACTIVATE_SIGNUP, Error.HTTP_404_ERROR, "Was never signed up", "Error: User was never signed up!");
-			throw new HttpStatus404Exception("Please sign up again. Your verification was not found.", new Throwable(), errorInfo);
+		try {
+			boolean isVerified = verificationService.isVerified(verificationNumber);
+
+			if (!isVerified) {
+				throw new IllegalStateException("User is not verified.");
+			}
+
+			if (isVerified) {
+				String email = verificationService.getEmail(verificationNumber);
+				boolean isActivated = userService.activateUser(email);
+
+				if (isActivated) {
+					verificationService.deleteVerification(email);
+				}
+			}
+		} catch (Exception ex) {
+			ErrorInfo errorInfo = new ErrorInfo(ACTIVATE_SIGNUP, Error.HTTP_404_ERROR, "Was never signed up.",
+					"Error: User was never signed up!");
+			throw new HttpStatus404Exception("Please sign up again. Your verification was not found.", new Throwable(),
+					errorInfo);
 		}
-		
+
 		return "activated-signup";
 	}
 }

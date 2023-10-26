@@ -13,6 +13,7 @@ import edu.remad.springconfig.globalexceptions.Error;
 import edu.remad.springconfig.globalexceptions.ErrorInfo;
 import edu.remad.springconfig.globalexceptions.HttpStatus500Exception;
 import edu.remad.springconfig.services.VerificationLinkCreationService;
+import edu.remad.springconfig.services.VerificationService;
 
 @Service
 public class VerificationLinkCreationServiceImpl implements VerificationLinkCreationService {
@@ -24,6 +25,9 @@ public class VerificationLinkCreationServiceImpl implements VerificationLinkCrea
 	
 	@Autowired
 	private BCryptPasswordEncoder verificationLinkEncoder;
+	
+	@Autowired
+	private VerificationService verificationService;
 
 	@Override
 	public long createVerificationNumber() {
@@ -40,7 +44,9 @@ public class VerificationLinkCreationServiceImpl implements VerificationLinkCrea
 
 	@Override
 	public boolean storeVerificationLinkNumber(String email, String verificationNumber) {
-		return true;
+		boolean isToStore = !verificationService.isVerified(verificationNumber);
+		
+		return isToStore;
 	}
 	
 	public String createVerificationLink(String encodedVerificationNumber) {
@@ -62,7 +68,8 @@ public class VerificationLinkCreationServiceImpl implements VerificationLinkCrea
 		
 		Map<String, Object> templateModel = new HashMap<>();
 		templateModel.put(EmailServiceImpl.EMAIL_TITLE_KEY, EmailServiceImpl.VERIFICATION_LINK_SUBJECT);
-		templateModel.put(EmailServiceImpl.VERIFICATION_LINK_KEY, verificationLink);		
+		templateModel.put(EmailServiceImpl.VERIFICATION_LINK_KEY, verificationLink);
+		templateModel.put(VerificationServiceImpl.VERIFICATION_NUMBER_KEY, encodedVerificationNumber);
 		
 		return templateModel;
 	}

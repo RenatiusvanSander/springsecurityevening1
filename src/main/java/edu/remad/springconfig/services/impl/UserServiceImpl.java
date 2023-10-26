@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 				.username(registrationDto.getUsername())
 				.email(registrationDto.getEmail())
 				.password(passwordEncoder.encode(registrationDto.getPassword()))
-				.enabled(true)
+				.enabled(false)
 				.roles(Arrays.asList(role)).build();
 		
 		System.out.println("#### UserService versucht zu speichern : " + user);
@@ -68,12 +68,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void activateUser(String email) {
+	public boolean activateUser(String email) {
 		UserEntity user = userEntityRepository.findByEmail(email);
 		
 		if(!user.getEnabled()) {
 			user.setEnabled(true);
 			userEntityRepository.saveAndFlush(user);
+			return true;
 		}
+		
+		return false;
 	}
 }

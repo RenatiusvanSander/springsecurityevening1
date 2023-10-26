@@ -10,6 +10,6 @@ public interface UserService {
 	void saveUser(RegistrationDto registrationDto);
 	boolean isUserExisting(String username);
 	List<UserDto> getAllUsers();
-	void activateUser(String email);
+	boolean activateUser(String email);
 	String[] createRolesArray(List<Role> roles);
 }
