@@ -74,12 +74,14 @@ public class EmailServiceImpl implements EmailService {
 		Template template = freeMarkerConfig.getConfiguration().getTemplate(templateName);
 		String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, templateModel);
 		
-		sendHtmlMail(to, subject, html);
+		String from = env.getSmtpUsername();
+		sendHtmlMail(from, to, subject, html);
 	}
 	
-	private void sendHtmlMail(String to, String subject, String htmlBody) throws MessagingException {
+	private void sendHtmlMail(String from, String to, String subject, String htmlBody) throws MessagingException {
 	    MimeMessage message = mailSender.createMimeMessage();
 	    MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+	    helper.setFrom(from);
 	    helper.setTo(to);
 	    helper.setSubject(subject);
 	    helper.setText(htmlBody, true);

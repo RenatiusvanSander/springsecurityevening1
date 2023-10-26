@@ -36,11 +36,11 @@ public class SystemEnvironment {
 	}
 
 	public String getSmtpPassword() {
-		return properties.get(SmtpAppConstants.SMTP_USER);
+		return properties.get(SmtpAppConstants.SMTP_PASSWORD);
 	}
 
 	public String getSmtpUsername() {
-		return properties.get(SmtpAppConstants.SMTP_PASSWORD);
+		return properties.get(SmtpAppConstants.SMTP_USER);
 	}
 
 	public String getAppDataSourcesMysqlUrl() {

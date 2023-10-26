@@ -20,6 +20,7 @@ import edu.remad.springconfig.dto.UserDto;
 import edu.remad.springconfig.globalexceptions.Error;
 import edu.remad.springconfig.globalexceptions.ErrorInfo;
 import edu.remad.springconfig.globalexceptions.HttpStatus404Exception;
+import edu.remad.springconfig.globalexceptions.HttpStatus500Exception;
 import edu.remad.springconfig.services.EmailService;
 import edu.remad.springconfig.services.UserService;
 import edu.remad.springconfig.services.VerificationLinkCreationService;
@@ -28,6 +29,8 @@ import edu.remad.springconfig.services.impl.EmailServiceImpl;
 
 @Controller
 public class LoginController {
+
+	private static final String PROCESS_SIGNUP = "/process-signup";
 
 	public static final String SIGNUP = "/signup";
 
@@ -61,7 +64,7 @@ public class LoginController {
 		return "signup";
 	}
 
-	@PostMapping("/process-signup")
+	@PostMapping(PROCESS_SIGNUP)
 	public String processSignUp(@Valid SignupDto signupDto) {
 
 		if (userService.isUserExisting(signupDto.getUsername())) {
@@ -81,7 +84,9 @@ public class LoginController {
 				//	"Nachricht ist gesendet.");
 			emailService.sendMessageUsingFreemarkerTemplate(signupDto.getEmail(), EmailServiceImpl.VERIFICATION_LINK_SUBJECT, VERIFICATION_EMAIL_TEMPLATE_NAME, templateModel);
 		} catch (Exception ex) {
-			System.out.println(ex);
+			String additionalText = "Mailer had error in sending activation e-mail.";
+			ErrorInfo info = new ErrorInfo(PROCESS_SIGNUP, Error.HTTP_500_ERROR, additionalText, ex.getMessage());
+			throw new HttpStatus500Exception(ACTIVATE_SIGNUP, ex.getCause(), info);
 		}
 
 		return "redirect:/myCustomLogin";
