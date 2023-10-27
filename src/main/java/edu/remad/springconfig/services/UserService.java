@@ -8,8 +8,12 @@ import edu.remad.springconfig.models.Role;
 
 public interface UserService {
 	void saveUser(RegistrationDto registrationDto);
+
 	boolean isUserExisting(String username);
+
 	List<UserDto> getAllUsers();
+
 	boolean activateUser(String email);
+
 	String[] createRolesArray(List<Role> roles);
 }
