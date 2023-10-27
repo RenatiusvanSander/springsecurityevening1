@@ -81,11 +81,6 @@ public class JdbcSecurityConfiguration {
 	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//		http.authorizeHttpRequests(authorize -> 
-//		authorize.requestMatchers("/","/helloWorld").permitAll()
-//		.requestMatchers("/hello","/bye","/login","/logout").hasRole("USER").anyRequest().authenticated())
-//        .formLogin().and()
-//        .httpBasic();
 		http.addFilterAfter(new TenantFilter(), BasicAuthenticationFilter.class)
 				.securityContext((securityContext) -> securityContext.requireExplicitSave(true))
 				.sessionManagement(
@@ -93,11 +88,9 @@ public class JdbcSecurityConfiguration {
 				.authorizeRequests().antMatchers("/", "/helloWorld", "/logoutSuccess", "/signup").permitAll()
 				.antMatchers("/hello", "/bye", "/login", "/logout", "/templates/**").authenticated().and().formLogin()
 				.loginPage("/myCustomLogin").loginProcessingUrl("/process-login").defaultSuccessUrl("/hello", true)
-//        .failureUrl("/login.html?error=true")
-//        .failureHandler(authenticationFailureHandler())
 				.and().csrf().and().logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/logoutSuccess")
 						.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(COOKIES))));
-//        .logoutSuccessHandler(logoutSuccessHandler())
+		http.httpBasic();
 
 		return http.build();
 	}
