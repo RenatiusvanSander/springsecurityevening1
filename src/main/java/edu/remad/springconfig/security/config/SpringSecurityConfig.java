@@ -3,6 +3,7 @@ package edu.remad.springconfig.security.config;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +13,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import edu.remad.springconfig.security.JwtAuthenticationEntryPoint;
+
 @Configuration
 @EnableWebSecurity(debug = true)
 public class SpringSecurityConfig {
-
+	
 	@Value("${spring.websecurity.debug:true}")
 	boolean webSecurityDebug;
 

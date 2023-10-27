@@ -4,6 +4,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 
 import edu.remad.springconfig.security.config.JPASecurityConfig;
 import edu.remad.springconfig.security.config.JdbcSecurityConfiguration;
+import edu.remad.springconfig.security.config.JwtSecurityConfig;
 import edu.remad.springconfig.security.config.SpringSecurityConfig;
 import edu.remad.springconfig.mvcconfig.LocaleResolverConfig;
 import edu.remad.springconfig.mvcconfig.WebMvcConfig;
@@ -13,7 +14,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class[] { SpringSecurityConfig.class, JdbcSecurityConfiguration.class, JPASecurityConfig.class,
-				LocaleResolverConfig.class, WebMvcConfig.class };
+				JwtSecurityConfig.class, LocaleResolverConfig.class, WebMvcConfig.class };
 	}
 
 	@Override

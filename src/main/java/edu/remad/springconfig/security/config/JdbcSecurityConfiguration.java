@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -80,6 +81,7 @@ public class JdbcSecurityConfiguration {
 	 * @throws Exception
 	 */
 	@Bean
+	@Order(1)
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.addFilterAfter(new TenantFilter(), BasicAuthenticationFilter.class)
 				.securityContext((securityContext) -> securityContext.requireExplicitSave(true))
@@ -90,7 +92,6 @@ public class JdbcSecurityConfiguration {
 				.loginPage("/myCustomLogin").loginProcessingUrl("/process-login").defaultSuccessUrl("/hello", true)
 				.and().csrf().and().logout(logout -> logout.logoutUrl("/logout").logoutSuccessUrl("/logoutSuccess")
 						.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(COOKIES))));
-		http.httpBasic();
 
 		return http.build();
 	}
