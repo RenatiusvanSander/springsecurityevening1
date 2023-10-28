@@ -8,9 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,7 +21,6 @@ import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter
 import com.mysql.cj.jdbc.Driver;
 
 import edu.remad.springconfig.security.filters.TenantFilter;
-import edu.remad.springconfig.services.impl.CustomJpaUserDetailsService;
 import edu.remad.springconfig.systemenvironment.SystemEnvironment;
 
 @Configuration
@@ -99,20 +95,5 @@ public class JdbcSecurityConfiguration {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public AuthenticationManager authManager(HttpSecurity http, DataSource dataSource, PasswordEncoder passwordEncoder,
-			CustomJpaUserDetailsService userDetailsService) throws Exception {
-		AuthenticationManagerBuilder authenticationManagerBuilder = http
-				.getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
-
-		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-		daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-		authenticationManagerBuilder.authenticationProvider(daoAuthenticationProvider);
-
-		return authenticationManagerBuilder.build();
 	}
 }
