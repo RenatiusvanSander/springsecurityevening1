@@ -5,13 +5,15 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -38,6 +40,16 @@ public class JPASecurityConfig {
 		return entityManagerFactoryBean;
 	}
 
+	@Bean
+	public LocalSessionFactoryBean sessionFactory(DataSource dataSource) {
+		final LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setDataSource(dataSource);
+		sessionFactory.setPackagesToScan(new String[] { "edu.remad.springconfig.models" });
+		sessionFactory.setHibernateProperties(additionalProperties());
+
+		return sessionFactory;
+	}
+
 	private final Properties additionalProperties() {
 		final Properties hibernateProperties = new Properties();
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
@@ -62,9 +74,9 @@ public class JPASecurityConfig {
 	}
 
 	@Bean
-	public PlatformTransactionManager transactionManager(final EntityManagerFactory emf) {
-		final JpaTransactionManager transactionManager = new JpaTransactionManager();
-		transactionManager.setEntityManagerFactory(emf);
+	public PlatformTransactionManager transactionManager(final LocalSessionFactoryBean sessionFactory) {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+		transactionManager.setSessionFactory(sessionFactory.getObject());
 
 		return transactionManager;
 	}
