@@ -29,5 +29,4 @@ public class Car {
     public void setModel(String model) {
         this.model = model;
     }
-
 }

@@ -2,10 +2,8 @@ package edu.remad.springconfig.security.config;
 
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import edu.remad.springconfig.systemenvironment.SystemEnvironment;
 
 @Configuration
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 @ComponentScan({ "edu.remad.springconfig" })
 @EnableJpaRepositories(basePackages = "edu.remad.springconfig.repositories")
 public class JPASecurityConfig {

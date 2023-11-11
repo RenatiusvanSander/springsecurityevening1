@@ -81,11 +81,6 @@ public class JdbcSecurityConfiguration {
 	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//		http.authorizeHttpRequests(authorize -> 
-//		authorize.requestMatchers("/","/helloWorld").permitAll()
-//		.requestMatchers("/hello","/bye","/login","/logout").hasRole("USER").anyRequest().authenticated())
-//        .formLogin().and()
-//        .httpBasic();
 		http.addFilterAfter(new TenantFilter(), BasicAuthenticationFilter.class)
 				.securityContext((securityContext) -> securityContext.requireExplicitSave(true))
 				.sessionManagement(
@@ -112,7 +107,6 @@ public class JdbcSecurityConfiguration {
 			CustomJpaUserDetailsService userDetailsService) throws Exception {
 		AuthenticationManagerBuilder authenticationManagerBuilder = http
 				.getSharedObject(AuthenticationManagerBuilder.class);
-//        authenticationManagerBuilder.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder);
 
 		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
 		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
