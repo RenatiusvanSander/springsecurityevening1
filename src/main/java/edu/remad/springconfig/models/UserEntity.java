@@ -12,11 +12,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Pattern;
 
 import edu.remad.springconfig.appconstants.RegexAppConstants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,8 +46,13 @@ public class UserEntity {
 	
 	private Boolean enabled;
 	
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+	@Default
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "user_rules", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
 	inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
 	private List<Role> roles = new ArrayList<>();
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id" )
+	private List<TokenEntity> tokens;
 }
