@@ -2,6 +2,7 @@ package edu.remad.springconfig.security.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter
 
 import com.mysql.cj.jdbc.Driver;
 
+import edu.remad.springconfig.security.ContentSecurityPolicySettings;
 import edu.remad.springconfig.security.filters.TenantFilter;
 import edu.remad.springconfig.services.impl.CustomJpaUserDetailsService;
 import edu.remad.springconfig.systemenvironment.SystemEnvironment;
@@ -33,12 +35,15 @@ public class JdbcSecurityConfiguration {
 	boolean webSecurityDebug;
 
 	private static final ClearSiteDataHeaderWriter.Directive[] COOKIES = Directive.values();
-
+	
+	@Autowired
+	private ContentSecurityPolicySettings contentSecurityPolicies;
+	
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web) -> web.debug(webSecurityDebug);
 	}
-
+	
 	@Bean
 	public DataSource createDataSource(SystemEnvironment systemEnvironment) {
 		SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
@@ -81,6 +86,8 @@ public class JdbcSecurityConfiguration {
 	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.cors();
+		http.headers().xssProtection().and().contentSecurityPolicy(contentSecurityPolicies.getContentSecurityPolicies());
 		http.addFilterAfter(new TenantFilter(), BasicAuthenticationFilter.class)
 				.securityContext((securityContext) -> securityContext.requireExplicitSave(true))
 				.sessionManagement(

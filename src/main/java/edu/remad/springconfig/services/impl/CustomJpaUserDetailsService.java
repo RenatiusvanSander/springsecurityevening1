@@ -42,8 +42,8 @@ public class CustomJpaUserDetailsService implements UserDetailsService {
 			User authUser = new User(user.getUsername(), user.getPassword(), grantedAuthorities);
 
 			return authUser;
-		} else {
-			throw new UsernameNotFoundException("Username is not found: " + username);
 		}
+
+		throw new UsernameNotFoundException("Username is not found: " + username);
 	}
 }

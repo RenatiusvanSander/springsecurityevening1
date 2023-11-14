@@ -1,5 +1,10 @@
 package edu.remad.springconfig.webappinitializing;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import edu.remad.springconfig.security.config.CorsSecurityConfig;
@@ -25,5 +30,18 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 	@Override
 	protected String[] getServletMappings() {
 		return new String[] { "/" };
+	}
+
+	@Bean
+	@Override
+	public WebApplicationContext createRootApplicationContext() {
+		Class<?>[] configClasses = getRootConfigClasses();
+		if (!ObjectUtils.isEmpty(configClasses)) {
+			AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+			context.register(configClasses);
+			return context;
+		} else {
+			return null;
+		}
 	}
 }
