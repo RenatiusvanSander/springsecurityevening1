@@ -19,4 +19,13 @@ public class RunMockingIntegrationTest extends SpringCoreJUnit5IntegrationTest {
 			System.out.println(beanText);
 		}
 	}
+	
+	@Test
+	public void mocksExistTest() throws Exception {
+		assertNotNull(servletContext,"servletContext shall not be null!");
+		assertNotNull(session,"session shall not be null!");
+		assertNotNull(request,"request shall not be null!");
+		assertNotNull(response,"response shall not be null!");
+		assertNotNull(webRequest,"webRequest shall not be null!");
+	}
 }
