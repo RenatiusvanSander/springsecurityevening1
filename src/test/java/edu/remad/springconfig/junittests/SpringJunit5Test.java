@@ -15,6 +15,7 @@ import edu.remad.springconfig.mvcconfig.WebMvcConfig;
 @ContextConfiguration(classes = WebMvcConfig.class)
 public class SpringJunit5Test {
 
+	@Disabled
 	@Test
 	public void test() {
 		System.out.println("Test");

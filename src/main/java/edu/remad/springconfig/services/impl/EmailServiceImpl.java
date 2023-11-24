@@ -10,6 +10,8 @@ import javax.mail.internet.MimeMessage;
 import javax.naming.OperationNotSupportedException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,6 +25,8 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 @Service
+@Primary
+@Qualifier("emailServiceImpl")
 public class EmailServiceImpl implements EmailService {
 	
 	public static final String VERIFICATION_LINK_SUBJECT = "Activate your pupil account";
