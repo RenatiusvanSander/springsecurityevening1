@@ -21,6 +21,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
+import edu.remad.springconfig.security.interceptors.HandlerTimeLoggingInterceptor;
 import edu.remad.springconfig.security.interceptors.SecuritySignupFilter;
 import edu.remad.springconfig.systemenvironment.SystemEnvironment;
 import edu.remad.springconfig.systemenvironment.SystemEnvironmentFactory;
@@ -54,6 +55,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		// TODO registry.addInterceptor(new LoggerInterceptor());
 		// TODO registry.addInterceptor(new UserInterceptor());
 		// TODO registry.addInterceptor(new SessionTimerInterceptor());
+		registry.addInterceptor(new HandlerTimeLoggingInterceptor()).addPathPatterns("/**").excludePathPatterns("/secure/**");
 		registry.addInterceptor(new SecuritySignupFilter()).addPathPatterns("/process-signup");
 		registry.addInterceptor(localeChangeInterceptor());
 	}
