@@ -23,7 +23,7 @@ public class HttpStatusExceptionController {
 	private static final String GET_MAPPING_404 = "/404";
 	private static final String GET_MAPPING_500 = "/500";
 	private static final String GET_API_ERROR = "/api-error";
-	private static final String REQUEST_MAPPING_EXCEPTIONS = "/exceptions";
+	public static final String REQUEST_MAPPING_EXCEPTIONS = "/exceptions";
 
 	@GetMapping(value = GET_MAPPING_500)
 	public String executeHttpStatus500Exception() {
