@@ -54,6 +54,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		registry.addResourceHandler("/static-resources/**").addResourceLocations("/static-resources")
 				.setCachePeriod(365 * 24 * 60 * 60).resourceChain(true).addResolver(new EncodedResourceResolver())
 				.addResolver(new PathResourceResolver());
+		registry.addResourceHandler("/webjars/**").addResourceLocations("/webjars");
 	}
 
 	@Override
