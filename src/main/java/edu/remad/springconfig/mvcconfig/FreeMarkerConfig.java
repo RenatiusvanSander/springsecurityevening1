@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 public class FreeMarkerConfig {
 
 	@Bean 
-	public FreeMarkerViewResolver viewResolver() { 
+	public FreeMarkerViewResolver freeMarkerViewResolver() { 
 	    FreeMarkerViewResolver resolver = new FreeMarkerViewResolver(); 
 	    resolver.setCache(true); 
 	    resolver.setPrefix("/freemarker/"); 
@@ -26,8 +26,8 @@ public class FreeMarkerConfig {
 	public FreeMarkerConfigurer freeMarkerConfigurer() {
 		Properties properties = new Properties();
 		properties.put("auto_import", "/spring.ftl as spring");
-		properties.put("default_encoding","UTF-8");
-		properties.put("template_exception_handler", "rethrow");
+////		properties.put("default_encoding","UTF-8");
+////		properties.put("template_exception_handler", "rethrow");
 
 		FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
 		configurer.setTemplateLoaderPath("/WEB-INF/templates");

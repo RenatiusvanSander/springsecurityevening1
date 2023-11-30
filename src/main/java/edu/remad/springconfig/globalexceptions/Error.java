@@ -10,7 +10,7 @@ public enum Error {
 	
 	private final HttpStatus httpStatus;
 	private final String error;
-	private  final String code;
+	private final String code;
 	private final String template;
 	private final String eMail;
 	private final String message;
