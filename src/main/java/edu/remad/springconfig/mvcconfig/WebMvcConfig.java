@@ -1,6 +1,5 @@
 package edu.remad.springconfig.mvcconfig;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.springframework.context.annotation.Bean;
@@ -18,11 +17,9 @@ import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.resource.EncodedResourceResolver;
-import org.springframework.web.servlet.resource.GzipResourceResolver;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
-import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import edu.remad.springconfig.security.interceptors.HandlerTimeLoggingInterceptor;
 import edu.remad.springconfig.security.interceptors.SecuritySignupFilter;
@@ -40,11 +37,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
-	InternalResourceViewResolver viewResolver() {
+	public InternalResourceViewResolver jspViewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
 		viewResolver.setViewClass(JstlView.class);
 		viewResolver.setPrefix("/WEB-INF/view/");
 		viewResolver.setSuffix(".jsp");
+		viewResolver.setOrder(1);
 
 		return viewResolver;
 	}
@@ -98,19 +96,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		registry.freeMarker().cache(true).cacheLimit(1000);
-	}
-
-	@Bean
-	public FreeMarkerConfigurer freeMarkerConfigurer() {
-		Properties properties = new Properties();
-		properties.put("auto_import", "/spring.ftl as spring");
-
-		FreeMarkerConfigurer configurer = new FreeMarkerConfigurer();
-		configurer.setTemplateLoaderPath("/WEB-INF/templates/freemarker");
-		configurer.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
-		configurer.setFreemarkerSettings(properties);
-
-		return configurer;
 	}
 
 	@Bean(name = "messageSource")
