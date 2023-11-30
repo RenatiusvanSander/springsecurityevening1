@@ -20,6 +20,7 @@
 		repeat E-Mail: <form:input path="repeatedEmail"/>
 		<br />
 		<input type="submit" value="signup">
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 	</form:form>
 </body>
 </html>
