@@ -36,7 +36,7 @@ public class HandlerTimeLoggingInterceptor implements AsyncHandlerInterceptor {
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
 		long startTime = (Long) request.getAttribute("startTime");
-		long endTime = (Long) request.getAttribute("endTime");
+		long endTime = request.getAttribute("endTime") != null ? (Long) request.getAttribute("endTime") : 0L ;
 		logger.info("####Custom Message#### Time Spent in Handler in ms : " + (endTime - startTime));
 	}
 }
