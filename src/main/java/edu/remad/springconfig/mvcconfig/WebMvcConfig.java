@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,6 +22,8 @@ import org.springframework.web.servlet.resource.EncodedResourceResolver;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import org.springframework.web.servlet.view.xml.MappingJackson2XmlView;
 
 import edu.remad.springconfig.security.interceptors.HandlerTimeLoggingInterceptor;
 import edu.remad.springconfig.security.interceptors.SecuritySignupFilter;
@@ -96,6 +100,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		registry.freeMarker().cache(true).cacheLimit(1000);
+		registry.jsp("/WEB-INF/view/", ".jsp");
 	}
 
 	@Bean(name = "messageSource")
@@ -117,5 +122,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/cors/greeting-javaconfig").allowedOrigins("http://localhost:8080");
+	}
+	
+	@Override
+	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+		configurer.favorPathExtension(false).
+	    favorParameter(true).
+	    parameterName("format").
+	    mediaType("xml", MediaType.APPLICATION_XML). 
+	    mediaType("json", MediaType.APPLICATION_JSON); 
 	}
 }

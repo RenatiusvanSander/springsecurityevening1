@@ -165,6 +165,11 @@
 			<artifactId>bootstrap</artifactId>
 			<version>5.3.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.16.0</version>
+		</dependency>
 
 		<!-- Testing -->
 		<dependency>
