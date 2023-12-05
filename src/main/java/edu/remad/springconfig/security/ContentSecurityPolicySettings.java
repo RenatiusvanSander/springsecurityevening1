@@ -13,14 +13,14 @@ public class ContentSecurityPolicySettings {
 
 	private String contentSecurityCustomizer() {
 		StringBuilder contenSecurityPolicies = new StringBuilder();
-		contenSecurityPolicies.append("style-src 'self' locahost:8080, localhost");
-		contenSecurityPolicies.append("font-src 'self' locahost:8080, localhost");
-		contenSecurityPolicies.append("img-src 'self' locahost:8080, localhost");
-		contenSecurityPolicies.append("media-src 'self' locahost:8080, localhost");
-		contenSecurityPolicies.append("object-src 'self' locahost:8080, localhost");
-		contenSecurityPolicies.append("plugin-types 'self' locahost:8080, localhost");
-		contenSecurityPolicies.append("frame-options 'self' locahost:8080, localhost");
-		contenSecurityPolicies.append("script-src 'self' locahost:8080, localhost");
+		contenSecurityPolicies.append("style-src http://localhost:8080 'nonce-hdhjdgvsfcsvhdsfv';");
+		contenSecurityPolicies.append("font-src 'self' http://localhost:8080;");
+		contenSecurityPolicies.append("img-src 'self' http://localhost:8080;");
+		contenSecurityPolicies.append("media-src 'self' http://localhost:8080;");
+		contenSecurityPolicies.append("object-src 'self' http://localhost:8080;");
+		contenSecurityPolicies.append("frame-src 'self' http://localhost:8080;");
+		contenSecurityPolicies.append("frame-ancestors 'self' http://localhost:8080;");
+		contenSecurityPolicies.append("script-src 'self' http://localhost:8080;");
 		
 		return contenSecurityPolicies.toString();
 	}

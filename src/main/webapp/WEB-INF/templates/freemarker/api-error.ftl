@@ -1,10 +1,11 @@
 <#ftl output_format="HTML">
+<!DOCTYPE html>
 <html>
   <head>
     <title>${errorMessage.httpStatus}</title>
-    <style>
+    <style nonce="hdhjdgvsfcsvhdsfv">
       .modal-container {
-        margin: 250 auto;
+        margin: 250px;
         z-index: 1000;
         background-color: transparent;
         display: flex;
