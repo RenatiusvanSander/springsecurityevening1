@@ -25,6 +25,7 @@ import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import org.springframework.web.servlet.view.xml.MappingJackson2XmlView;
 
+import edu.remad.springconfig.security.interceptors.GlobalInterceptor;
 import edu.remad.springconfig.security.interceptors.HandlerTimeLoggingInterceptor;
 import edu.remad.springconfig.security.interceptors.SecuritySignupFilter;
 import edu.remad.springconfig.systemenvironment.SystemEnvironment;
@@ -68,6 +69,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 				.excludePathPatterns("/secure/**");
 		registry.addInterceptor(new SecuritySignupFilter()).addPathPatterns("/process-signup");
 		registry.addInterceptor(localeChangeInterceptor());
+		registry.addInterceptor(new GlobalInterceptor()).addPathPatterns("/project/**");
 	}
 
 	@Bean
