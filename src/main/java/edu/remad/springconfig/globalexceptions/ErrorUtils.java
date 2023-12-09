@@ -34,4 +34,17 @@ public final class ErrorUtils {
 
 		return em;
 	}
+	
+	public static ErrorMessage fillErrorMessage(HttpStatusException exception) {
+		ErrorMessage em = new ErrorMessage();
+		em.setCode(exception.getCode());
+		em.setEmail(exception.getEMail());
+		em.setError(exception.getError().getError());
+		em.setMessage(exception.getMessage());
+		em.setHttpStatus(exception.getHttpStatus().name());
+		em.setLocalizedMessage(exception.getLocalizedMessage());
+		em.setUrl(exception.getUrl());
+
+		return em;
+	}
 }

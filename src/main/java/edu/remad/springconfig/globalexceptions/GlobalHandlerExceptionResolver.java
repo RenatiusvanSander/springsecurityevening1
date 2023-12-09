@@ -19,15 +19,16 @@ public class GlobalHandlerExceptionResolver implements HandlerExceptionResolver 
 		String templateViewName = exception instanceof HttpStatusException
 				? ((HttpStatusException) exception).getTemplate()
 				: Error.HTTP_500_ERROR.getTemplate();
-		HttpStatus status = exception instanceof HttpStatusException
-				? ((HttpStatusException) exception).getHttpStatus()
+		HttpStatus status = exception instanceof HttpStatusException ? ((HttpStatusException) exception).getHttpStatus()
 				: Error.HTTP_500_ERROR.getHttpStatus();
-		ErrorMessage errorMessage = ErrorUtils.fillErrorMessage();
-		
+		ErrorMessage errorMessage = exception instanceof HttpStatusException
+				? ErrorUtils.fillErrorMessage((HttpStatusException) exception)
+				: ErrorUtils.fillErrorMessage();
+
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("errorMessage", errorMessage);
 		modelAndView.setViewName(templateViewName);
-		//modelAndView.setStatus(status);
+		modelAndView.setStatus(status);
 
 		return modelAndView;
 	}

@@ -3,7 +3,6 @@ package edu.remad.springconfig.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import edu.remad.springconfig.globalexceptions.Error;
@@ -60,9 +59,14 @@ public class HttpStatusExceptionController {
 
 	@GetMapping(value = GET_API_ERROR)
 	public String getApiError(Model model) {
-		ErrorMessage em = ErrorUtils.fillErrorMessage();
+		String url = REQUEST_MAPPING_EXCEPTIONS + GET_API_ERROR;
+		ErrorInfo errorInfo = new ErrorInfo(url, Error.HTTP_500_ERROR, "Test HTTP Status 500", "HTTP 500 thrown");
+		HttpStatus500Exception exception = new HttpStatus500Exception("Upps here happened a Http Status 500 error",
+				new Throwable(), errorInfo);
+
+		ErrorMessage em = ErrorUtils.fillErrorMessage(exception);
 		model.addAttribute("errorMessage", em);
 
-		return "api-error";
+		return exception.getTemplate();
 	}
 }
