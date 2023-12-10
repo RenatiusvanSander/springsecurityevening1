@@ -14,16 +14,24 @@ public class StopWatch {
 	private Instant startTime;
 	private Instant endTime;
 	private Long durationInMilliSeconds;
+	private boolean runs;
+	private boolean stopped;
 	
 	public StopWatch() {
+		runs = false;
+		stopped = true;
 	}
 	
 	public void start() {
 		startTime = LocalDateTime.now().toInstant(ZONE_OFFSET);
+		runs = true;
+		stopped = false;
 	}
 
 	public void stop() {
 		endTime = LocalDateTime.now().toInstant(ZONE_OFFSET);
+		runs = false;
+		stopped = true;
 	}
 	
 	public long getTime() {
@@ -32,5 +40,13 @@ public class StopWatch {
 		}
 		
 		return durationInMilliSeconds;
+	}
+
+	public boolean isRunning() {
+		return runs;
+	}
+
+	public boolean isStopped() {
+		return stopped;
 	}
 }

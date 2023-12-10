@@ -9,19 +9,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import edu.remad.springconfig.tools.StopWatch;
+
 public class HandlerTimeLoggingInterceptor implements AsyncHandlerInterceptor {
 	
 	private Logger logger;
+	private StopWatch stopWatch;
 	
 	public HandlerTimeLoggingInterceptor() {
 		logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		logger.setLevel(Level.ALL);
+		stopWatch = new StopWatch();
 	}
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		request.setAttribute("startTime", System.currentTimeMillis());
+		stopWatch.start();
 
 		return true;
 	}
@@ -35,8 +40,8 @@ public class HandlerTimeLoggingInterceptor implements AsyncHandlerInterceptor {
 	@Override
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
 			throws Exception {
-		long startTime = (Long) request.getAttribute("startTime");
-		long endTime = request.getAttribute("endTime") != null ? (Long) request.getAttribute("endTime") : 0L ;
-		logger.info("####Custom Message#### Time Spent in Handler in ms : " + (endTime - startTime));
+		stopWatch.stop();
+		logger.info(String.format("####Time Measuring#### Time Spent in %s in ms : %d", request.getRequestURI(), stopWatch.getTime()));
+		stopWatch = new StopWatch();
 	}
 }
