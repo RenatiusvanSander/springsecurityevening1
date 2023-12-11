@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -36,6 +37,11 @@ import edu.remad.springconfig.systemenvironment.SystemEnvironmentFactory;
 @ComponentScan("edu.remad.springconfig")
 public class WebMvcConfig implements WebMvcConfigurer {
 
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addConverter(new JulianDateConverter());
+	}
+	
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController("/").setViewName("index");
