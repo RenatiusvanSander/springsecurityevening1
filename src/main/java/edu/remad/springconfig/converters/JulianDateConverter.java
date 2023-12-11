@@ -1,4 +1,4 @@
-package edu.remad.springconfig.mvcconfig;
+package edu.remad.springconfig.converters;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

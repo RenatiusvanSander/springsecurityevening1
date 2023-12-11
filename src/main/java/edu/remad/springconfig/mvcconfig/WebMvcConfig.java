@@ -2,6 +2,7 @@ package edu.remad.springconfig.mvcconfig;
 
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,6 +27,8 @@ import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import org.springframework.web.servlet.view.xml.MappingJackson2XmlView;
 
+import edu.remad.springconfig.converters.JulianDateConverter;
+import edu.remad.springconfig.converters.ResourceConverter;
 import edu.remad.springconfig.security.interceptors.GlobalInterceptor;
 import edu.remad.springconfig.security.interceptors.HandlerTimeLoggingInterceptor;
 import edu.remad.springconfig.security.interceptors.SecuritySignupFilter;
@@ -37,9 +40,13 @@ import edu.remad.springconfig.systemenvironment.SystemEnvironmentFactory;
 @ComponentScan("edu.remad.springconfig")
 public class WebMvcConfig implements WebMvcConfigurer {
 
+	@Autowired
+	private ResourceConverter resourceConverter;
+	
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addConverter(new JulianDateConverter());
+		registry.addConverter(resourceConverter);
 	}
 	
 	@Override
